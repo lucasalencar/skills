@@ -1,0 +1,107 @@
+#!/bin/bash
+
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+SKILLS_SOURCE="$REPO_ROOT/skills"
+INSTALL_METHOD="ln"
+
+# Print helpers
+info()    { printf "\r  [\033[00;34mℹ\033[0m] %s\n" "$1"; }
+success() { printf "\r\033[2K  [\033[00;32m✓\033[0m] \033[00;32m%s\033[0m\n" "$1"; }
+fail()    { printf "\r\033[2K  [\033[0;31m✗\033[0m] \033[0;31m%s\033[0m\n" "$1"; echo; exit 1; }
+
+is_agent_installed() {
+  command -v "$1" &>/dev/null
+}
+
+get_target_dir() {
+  case "$1" in
+    claude)   echo "$HOME/.claude/skills" ;;
+    cursor)   echo "$HOME/.cursor/skills" ;;
+    gemini)   echo "$HOME/.gemini/prompts" ;;
+    opencode) echo "$HOME/.config/opencode/skills" ;;
+  esac
+}
+
+install_skill() {
+  local skill="$1"
+  local target_dir="$2"
+  local skill_name
+  skill_name=$(basename "$skill")
+
+  if [ "$INSTALL_METHOD" = "cp" ]; then
+    cp -r "$skill" "$target_dir/$skill_name"
+  else
+    ln -sfn "$skill" "$target_dir/$skill_name"
+  fi
+}
+
+install_for_agent() {
+  local agent="$1"
+  local target_dir
+  target_dir=$(get_target_dir "$agent")
+
+  info "Installing skills for $agent (method: $INSTALL_METHOD)"
+  mkdir -p "$target_dir"
+
+  local count=0
+  for skill in "$SKILLS_SOURCE"/*/; do
+    if [ -d "$skill" ]; then
+      install_skill "$skill" "$target_dir" "$agent"
+      count=$((count + 1))
+    fi
+  done
+
+  success "Installed $count skill(s) for $agent"
+}
+
+# Parse flags
+while [[ "$1" == --* ]]; do
+  case "$1" in
+    --method=*)
+      INSTALL_METHOD="${1#--method=}"
+      if [[ "$INSTALL_METHOD" != "ln" && "$INSTALL_METHOD" != "cp" ]]; then
+        fail "Invalid method: $INSTALL_METHOD. Use 'ln' or 'cp'."
+      fi
+      shift
+      ;;
+    *)
+      fail "Unknown option: $1"
+      ;;
+  esac
+done
+
+# Main logic
+if [ -z "$1" ]; then
+  info "Auto-detecting installed agents..."
+
+  detected=()
+  for agent in claude cursor gemini opencode; do
+    if is_agent_installed "$agent"; then
+      detected+=("$agent")
+    fi
+  done
+
+  if [ ${#detected[@]} -eq 0 ]; then
+    fail "No agents detected. Install manually with: $0 <agent>\nAvailable agents: claude, cursor, gemini, opencode"
+  fi
+
+  info "Detected agents: ${detected[*]}"
+  for agent in "${detected[@]}"; do
+    install_for_agent "$agent"
+  done
+else
+  case "$1" in
+    claude|cursor|gemini|opencode)
+      install_for_agent "$1"
+      ;;
+    all)
+      info "Installing for all agents..."
+      for agent in claude cursor gemini opencode; do
+        install_for_agent "$agent"
+      done
+      ;;
+    *)
+      fail "Unknown agent: $1\nAvailable agents: claude, cursor, gemini, opencode, all"
+      ;;
+  esac
+fi
