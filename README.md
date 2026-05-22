@@ -1,22 +1,22 @@
 # Skills
 
-Esse repositório reúne todas as skills que eu uso nos diversos AI Agents do meu dia a dia.
+This repository brings together all the skills I use across the various AI Agents in my daily workflow.
 
-As skills são instruções e prompts que ampliam as capacidades dos agentes de IA, permitindo que eles realizem tarefas específicas de forma mais eficiente.
+Skills are instructions and prompts that extend the capabilities of AI agents, enabling them to perform specific tasks more efficiently.
 
-## Sobre as skills
+## About the skills
 
-As skills aqui presentes são pessoais — desenvolvidas e ajustadas conforme minha própria experiência com AI Agents. Algumas delas são inspirações ou adaptações de skills interessantes compartilhadas pela comunidade na internet. Quando aplicável, a fonte original é creditada dentro da própria skill.
+The skills here are personal — developed and refined through my own experience with AI Agents. Some of them are inspirations or adaptations of interesting skills shared by the community online. Where applicable, the original source is credited within the skill itself.
 
-## Estrutura
+## Structure
 
 ```
 skills/
-  ├── <nome-da-skill>/
-  │     └── README.md   # descrição e instruções da skill
+  ├── <skill-name>/
+  │     └── README.md   # skill description and instructions
   └── ...
 ```
 
-## Contribuindo
+## Contributing
 
-Esse é um repositório pessoal, mas sinta-se à vontade para se inspirar nas skills aqui presentes.
+This is a personal repository, but feel free to draw inspiration from the skills shared here.
