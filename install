@@ -35,6 +35,41 @@ install_skill() {
   fi
 }
 
+extract_skill_description() {
+  local skill="$1"
+  local skill_file="$skill/SKILL.md"
+  if [ -f "$skill_file" ]; then
+    sed -n '/^description: /{s/^description: //p;}' "$skill_file" | head -1
+  fi
+}
+
+install_skill_commands() {
+  local commands_dir="$HOME/.config/opencode/commands"
+
+  info "Installing command aliases for opencode"
+  mkdir -p "$commands_dir"
+
+  local count=0
+  for skill in "$SKILLS_SOURCE"/*/; do
+    local skill_name
+    skill_name=$(basename "$skill")
+    local desc
+    desc=$(extract_skill_description "$skill")
+    local cmd_file="$commands_dir/$skill_name.md"
+
+    cat > "$cmd_file" <<EOF
+---
+description: $desc
+---
+
+Load the skill "$skill_name" and follow its instructions.
+EOF
+    count=$((count + 1))
+  done
+
+  success "Installed $count command(s) for opencode"
+}
+
 install_for_agent() {
   local agent="$1"
   local target_dir
@@ -52,6 +87,10 @@ install_for_agent() {
   done
 
   success "Installed $count skill(s) for $agent"
+
+  if [ "$agent" = "opencode" ]; then
+    install_skill_commands
+  fi
 }
 
 # Parse flags
