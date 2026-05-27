@@ -120,6 +120,19 @@ Execute each instruction described there, in order. Treat the custom steps as di
 
 If a step is ambiguous or missing required information (e.g. a ticket key that can't be inferred), ask the user before proceeding.
 
+## 5.1 — Slack posting: check for existing thread before posting
+
+Whenever a custom step says to post a message to a Slack channel, **always** run this check first:
+
+1. Get the PR URL via `gh pr view <number> --json url -q .url`. Search the target channel for messages from the last 24 hours that contain the PR URL using `slack_search_public` with a query like `in:<channel-id> <PR URL> after:<yesterday-date>`. The PR URL is the most reliable signal — review request messages always include it as the link reviewers click to open the PR.
+2. **If a recent message is found:**
+   - Do **not** post a new top-level message.
+   - Instead, reply in that existing thread.
+   - Before replying, fetch the PR's review comments and reviews via `gh pr view <number> --json reviews,comments` to identify everyone who has left a comment or review on the PR.
+   - Build a reply that: (a) states the PR has been updated and is ready for re-review, and (b) tags each reviewer/commenter found using their Slack handle. To map GitHub usernames to Slack users, search for each name via `slack_search_users`.
+   - Post the reply to the existing thread using `thread_ts` from the original message.
+3. **If no recent message is found:** proceed with the original step as written (post a new top-level message).
+
 ---
 
 # Output
