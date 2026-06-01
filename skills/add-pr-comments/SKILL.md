@@ -12,11 +12,7 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
    git rev-parse HEAD
    ```
 
-3. For each comment, determine the `position` (1-indexed line in the diff hunk, NOT the file line number):
-   - Run `git diff main...HEAD -- <file-path>` to see the diff
-   - The `@@ -start,count +start,count @@` hunk header starts counting at 1 for the first line after it
-   - Count each line in the diff output (prefixed with ` `, `+`, or `-`) sequentially within the hunk
-   - For new files, position equals the line number in the file (since every line is an addition)
+3. For each comment, use the **file line number** (NOT the diff position). Read the file to confirm the exact line number.
 
 4. Add each comment using:
    ```
@@ -24,14 +20,16 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
      -f body="..." \
      -f commit_id="<sha>" \
      -f path="<file-path>" \
-     -F position=<N>
+     -F line=<file-line-number> \
+     -f side="RIGHT"
    ```
 
    Parameters:
    - `body`: the comment text
    - `commit_id`: the SHA from step 2
    - `path`: the file path relative to repo root (e.g. `.maestro/create-user.yaml`)
-   - `position`: the 1-indexed line position in the diff hunk
+   - `line`: the 1-indexed file line number (read the file to get it)
+   - `side`: always `"RIGHT"` (the new version of the file)
 
 ## Example
 
@@ -40,12 +38,12 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
   -f body="O testID \`user-form-papel-select\` não existe no código fonte." \
   -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
   -f path=".maestro/create-user-organizador.yaml" \
-  -F position=53
+  -F line=53 \
+  -f side="RIGHT"
 ```
 
 ## Notes
 
-- Use `-f` for string values and `-F` for integers/booleans (required for the `position` parameter).
-- All files in this context are new, so position equals file line number.
-- For existing files with modifications, count positions from the `@@` hunk header.
+- Use `-f` for string values and `-F` for integers/booleans (required for `line`).
+- Use `line` (file line number) instead of `position` (diff position). The `position` parameter is deprecated and error-prone — it requires counting diff hunk lines, which is unreliable.
 - Owner/repo can be extracted from `git remote get-url origin`.
