@@ -16,7 +16,24 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
 
 4. For each comment, use the **file line number** (NOT the diff position). Read the file to confirm the exact line number.
 
-5. Before posting, check if there are already existing review comments on the same file + line:
+5. Check if the file is in the PR diff:
+
+   ```
+   gh api repos/:owner/:repo/pulls/:number/files --jq '.[].filename'
+   ```
+
+   If the file path is **NOT in the diff**, post the comment as a **general PR comment** referencing the file and line so the person can locate themselves:
+
+   ```
+   gh api repos/:owner/:repo/issues/:number/comments \
+     -f body="**File: \`<file-path>\` (line <line-number>)** — <comment>"
+   ```
+
+   Then **skip** the following steps (do not attempt to post as a diff comment).
+
+   If the file **is in the diff**, proceed with the steps below.
+
+6. Before posting, check if there are already existing review comments on the same file + line:
 
    ```
    gh api repos/:owner/:repo/pulls/:number/comments
@@ -25,18 +42,18 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
    Filter the response for comments that match the same `path` and `line`. If one is found:
 
    - **Compare the content** of the existing comment with the new comment you intend to post.
-   - If the existing comment **already fully covers the same point** (mesmo contexto, mesma informação essencial), **skip** — não poste nem atualize.
+   - If the existing comment **already fully covers the same point** (same context, same essential information), **skip** — do not post or update.
    - If the existing comment is **incomplete or missing key information**, **update** it with the complete content using `PATCH`:
 
      ```
      gh api repos/:owner/:repo/pulls/comments/:comment_id \
        -X PATCH \
-       -f body="<conteúdo completo, incluindo a informação nova>"
+       -f body="<complete content, including the new information>"
      ```
 
    - If **no existing comment** is found on that file + line, post a new one as normal.
 
-6. Add each new comment using:
+7. Add each new comment (only for files that are in the diff) using:
    ```
    gh api repos/:owner/:repo/pulls/:number/comments \
      -f body="..." \
@@ -55,21 +72,27 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
 
 ## Example
 
-Novo comentário:
+New comment:
 ```
 gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
-  -f body="O testID \`user-form-papel-select\` não existe no código fonte." \
+  -f body="The testID \`user-form-papel-select\` does not exist in the source code." \
   -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
   -f path=".maestro/create-user-organizador.yaml" \
   -F line=53 \
   -f side="RIGHT"
 ```
 
-Atualizar comentário existente:
+General PR comment (file not in diff):
+```
+gh api repos/tecMTST/app-vitoria-mobile/issues/72/comments \
+  -f body="**File: \`src/utils/helpers.ts\` (line 120)** — The \`formatDate\` function appears to be duplicated. Consider unifying it with the version in \`src/helpers/date.ts\`."
+```
+
+Update existing comment:
 ```
 gh api repos/tecMTST/app-vitoria-mobile/pulls/comments/123456 \
   -X PATCH \
-  -f body="O testID \`user-form-papel-select\` não existe no código fonte. Verifique se foi renomeado ou removido."
+  -f body="The testID \`user-form-papel-select\` does not exist in the source code. Check if it was renamed or removed."
 ```
 
 ## Notes
@@ -78,3 +101,5 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/comments/123456 \
 - Use `line` (file line number) instead of `position` (diff position). The `position` parameter is deprecated and error-prone — it requires counting diff hunk lines, which is unreliable.
 - Owner/repo can be extracted from `git remote get-url origin`.
 - To decide if a comment is "complete", check if the existing comment's body contains the same core observation/point as the new comment. If it mentions the same problem but lacks detail, update it. If it already has the same level of detail, skip.
+- To check if a file is in the diff, use `gh api repos/:owner/:repo/pulls/:number/files --jq '.[].filename'` and verify the file path appears in the list.
+- General PR comments (issue comments) are not tied to a specific line but are useful for files that were not changed in the PR. Always include the file path and line in the body for reference.
