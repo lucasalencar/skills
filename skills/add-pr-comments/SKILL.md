@@ -97,9 +97,21 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/comments/123456 \
 
 ## Notes
 
+- **Escape backticks** inside double-quoted `-f body="..."` with `\``, otherwise the shell interprets them as command substitution and strips the content. Exemplo: `-f body="The \`formatDate\` function"`.
 - Use `-f` for string values and `-F` for integers/booleans (required for `line`).
 - Use `line` (file line number) instead of `position` (diff position). The `position` parameter is deprecated and error-prone — it requires counting diff hunk lines, which is unreliable.
 - Owner/repo can be extracted from `git remote get-url origin`.
 - To decide if a comment is "complete", check if the existing comment's body contains the same core observation/point as the new comment. If it mentions the same problem but lacks detail, update it. If it already has the same level of detail, skip.
 - To check if a file is in the diff, use `gh api repos/:owner/:repo/pulls/:number/files --jq '.[].filename'` and verify the file path appears in the list.
 - General PR comments (issue comments) are not tied to a specific line but are useful for files that were not changed in the PR. Always include the file path and line in the body for reference.
+
+## Post-submission validation
+
+After posting all comments, **validate each one** by reading back the response JSON or fetching the comment:
+
+1. **Line number**: confirm the `line` field in the response matches the intended line (the `-F line=` value you sent).
+2. **File path**: confirm the `path` field matches the intended file.
+3. **Body content**: confirm the `body` field preserved all text, especially text inside backticks — if backticks were not escaped, the content may be missing.
+4. **No duplicate comments**: if you accidentally posted the same comment twice, delete the duplicate with `gh api repos/:owner/:repo/pulls/comments/:id -X DELETE`.
+
+If any comment is wrong, **delete and re-post** it with the correct parameters.
