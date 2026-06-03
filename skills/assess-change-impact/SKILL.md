@@ -3,6 +3,10 @@ name: assess-change-impact
 description: Analyze a code change for non-obvious ripple effects across the rest of the system. Use after AI-generated edits, before merge, to surface semantic shifts, symmetric code paths, test fixture antipatterns, and latent bugs hidden behind a change that looks local. Language- and project-agnostic. Trigger when the user asks for "impact analysis", "what else could break", "did this change anything else", "review the blast radius of these changes", or wants a pre-merge safety check on AI-generated edits.
 ---
 
+## Execution
+
+Always delegate the entire impact analysis to a subagent (via the Agent tool) without passing any current conversation context. This guarantees the analysis is unbiased and not influenced by prior conversation history.
+
 ## Goal
 Given a code change, identify what could break or behave differently in the rest of the system as a consequence — including effects the diff does not make obvious. The intended reader is someone about to merge or deploy: they want a short, specific list of risks they should look at, not a procedural report.
 

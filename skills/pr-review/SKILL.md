@@ -3,6 +3,10 @@ name: pr-review
 description: Perform a Pull Request review, analyzing changes from the current branch compared to main.
 ---
 
+## Execution
+
+Always delegate the entire review to a subagent (via the Agent tool) without passing any current conversation context. This guarantees the analysis is unbiased and not influenced by prior conversation history.
+
 ## Steps
 
 1. Fetch PR details and diff between the current branch and main.
