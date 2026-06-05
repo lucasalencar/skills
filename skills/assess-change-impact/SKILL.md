@@ -7,6 +7,10 @@ description: Analyze a code change for non-obvious ripple effects across the res
 
 Always delegate the entire impact analysis to a subagent (via the Agent tool) without passing any current conversation context. This guarantees the analysis is unbiased and not influenced by prior conversation history.
 
+When building the subagent prompt, copy the full text of every section of this skill verbatim — do not summarize, paraphrase, or omit any section. The subagent must receive identical instructions to what is written here.
+
+Once the subagent finishes, relay its complete output to the user exactly as returned — do not summarize, compress, or rewrite it. The subagent's response is the final output of this skill.
+
 ## Goal
 Given a code change, identify what could break or behave differently in the rest of the system as a consequence — including effects the diff does not make obvious. The intended reader is someone about to merge or deploy: they want a short, specific list of risks they should look at, not a procedural report.
 
