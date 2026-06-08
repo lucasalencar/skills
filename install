@@ -2,6 +2,7 @@
 
 REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
 SKILLS_SOURCE="$REPO_ROOT/skills"
+AGENTS_SOURCE="$REPO_ROOT/agents"
 INSTALL_METHOD="ln"
 
 # Print helpers
@@ -22,6 +23,15 @@ get_target_dir() {
   esac
 }
 
+get_agent_target_dir() {
+  case "$1" in
+    claude)   echo "$HOME/.claude/agents" ;;
+    cursor)   echo "$HOME/.cursor/agents" ;;
+    gemini)   echo "$HOME/.gemini/agents" ;;
+    opencode) echo "$HOME/.config/opencode/agents" ;;
+  esac
+}
+
 install_skill() {
   local skill="$1"
   local target_dir="$2"
@@ -32,6 +42,19 @@ install_skill() {
     cp -r "$skill" "$target_dir/$skill_name"
   else
     ln -sfn "$skill" "$target_dir/$skill_name"
+  fi
+}
+
+install_agent() {
+  local agent="$1"
+  local target_dir="$2"
+  local agent_name
+  agent_name=$(basename "$agent")
+
+  if [ "$INSTALL_METHOD" = "cp" ]; then
+    cp "$agent" "$target_dir/$agent_name"
+  else
+    ln -sfn "$agent" "$target_dir/$agent_name"
   fi
 }
 
@@ -70,6 +93,27 @@ EOF
   success "Installed $count command(s) for opencode"
 }
 
+install_agents_for_tool() {
+  local tool="$1"
+  local agent_target_dir
+  agent_target_dir=$(get_agent_target_dir "$tool")
+
+  [ -z "$agent_target_dir" ] && return
+  [ -d "$AGENTS_SOURCE" ] || return
+
+  info "Installing agents for $tool (method: $INSTALL_METHOD)"
+  mkdir -p "$agent_target_dir"
+
+  local count=0
+  for agent in "$AGENTS_SOURCE"/*.md; do
+    [ -f "$agent" ] || continue
+    install_agent "$agent" "$agent_target_dir"
+    count=$((count + 1))
+  done
+
+  success "Installed $count agent(s) for $tool"
+}
+
 install_for_agent() {
   local agent="$1"
   local target_dir
@@ -87,6 +131,8 @@ install_for_agent() {
   done
 
   success "Installed $count skill(s) for $agent"
+
+  install_agents_for_tool "$agent"
 
   if [ "$agent" = "opencode" ]; then
     install_skill_commands
