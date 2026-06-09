@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SKILLS_SOURCE="$REPO_ROOT/skills"
 AGENTS_SOURCE="$REPO_ROOT/agents"
 INSTALL_METHOD="ln"
