@@ -8,6 +8,8 @@ Skills are instructions and prompts that extend the capabilities of AI agents, e
 
 The skills here are personal — developed and refined through my own experience with AI Agents. Some of them are inspirations or adaptations of interesting skills shared by the community online. Where applicable, the original source is credited within the skill itself.
 
+Some skills are synced from [Matt Pocock's skills repository](https://github.com/mattpocock/skills) — a great open collection of AI agent skills worth checking out.
+
 ## Structure
 
 ```
@@ -29,6 +31,16 @@ skills/
 | [open-pr](skills/open-pr/SKILL.md) | Create a new pull request based on the changes in the current branch, following repository PR templates and conventions. |
 | [pr-review](skills/pr-review/SKILL.md) | Perform a Pull Request review, checking for bugs, typos, security flaws, performance issues, and simplification opportunities. |
 | [resolve-pr-comments](skills/resolve-pr-comments/SKILL.md) | Fetch Pull Request comments and resolve them by applying suggested changes or replying with reasoning when a suggestion conflicts with prior decisions. |
+
+## Syncing from external sources
+
+Some skills are synced from [mattpocock/skills](https://github.com/mattpocock/skills). To update them:
+
+```bash
+./scripts/sync-mattpocock-skills
+```
+
+The script clones the source repo into `.sources/` (gitignored) on first run, then pulls updates on subsequent runs, and copies the selected skills into `skills/`. To change which skills are synced, edit the `SKILLS_TO_SYNC` array in `scripts/sync-mattpocock-skills`.
 
 ## Contributing
 

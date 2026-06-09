@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Source repository
+EXTERNAL_REPO="https://github.com/mattpocock/skills.git"
+SOURCES_DIR=".sources"
+REPO_NAME="mattpocock-skills"
+CLONE_DIR="$SOURCES_DIR/$REPO_NAME"
+
+# Skills to sync — paths relative to skills/ in the source repo
+# Format: "category/skill-name"
+SKILLS_TO_SYNC=(
+  "engineering/improve-codebase-architecture"
+  "engineering/grill-with-docs"
+  "productivity/grill-me"
+)
+
+# Clone or update the source repo
+mkdir -p "$SOURCES_DIR"
+if [ -d "$CLONE_DIR/.git" ]; then
+  echo "Updating $REPO_NAME..."
+  git -C "$CLONE_DIR" pull --quiet
+else
+  echo "Cloning $REPO_NAME..."
+  git clone --quiet "$EXTERNAL_REPO" "$CLONE_DIR"
+fi
+
+# Sync selected skills
+echo ""
+for skill_path in "${SKILLS_TO_SYNC[@]}"; do
+  skill_name=$(basename "$skill_path")
+  src="$CLONE_DIR/skills/$skill_path"
+
+  if [ -d "$src" ]; then
+    rm -rf "skills/$skill_name"
+    cp -r "$src" "skills/$skill_name"
+    echo "✓ synced: $skill_name"
+  else
+    echo "⚠ not found in source: skills/$skill_path"
+  fi
+done
+
+echo ""
+echo "Done. Run ./install to reinstall into your agent tools (needed if using --method=cp)."
