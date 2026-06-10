@@ -35,8 +35,10 @@ description: Fetch Pull Request comments and resolve them according to the sugge
      - **Ask the user**: ambiguous, has significant downsides, or cannot be
        fully evaluated from the code alone. Pause and ask before proceeding.
 
-5. Do NOT post replies on GitHub to comments authored by the PR owner — just
-   apply the change.
+5. For comments authored by the PR owner:
+   - If it is a **question**, reply with the answer to document it in the
+     thread — no code change unless the answer reveals a real problem.
+   - If it is a **suggestion**, just apply the change without posting a reply.
 6. If a comment goes against previous definitions from a plan or chat history,
    reply explaining the reasoning instead of blindly applying.
 7. When all comments are addressed, commit and push changes.
