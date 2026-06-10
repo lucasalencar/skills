@@ -7,17 +7,13 @@ description: Reviews branch changes by running pr-review and assess-change-impac
 
 Spawn two subagents in parallel via the Agent tool. Each subagent must receive a clean, empty context — do not pass any conversation history, prior messages, or current context.
 
-For each subagent, instruct it to:
-1. Read the corresponding skill file listed below
-2. Follow the instructions in that file directly — **skip any section that says to delegate to a subagent**, since it is already running as one
-
 ### Subagent 1: PR Review
 
-Skill file: `~/.claude/skills/pr-review/SKILL.md`
+Tell it to invoke the `pr-review` skill and do the work directly — **skip any instruction inside that skill that says to delegate to a subagent**, since it is already running as one.
 
 ### Subagent 2: Change Impact Analysis
 
-Skill file: `~/.claude/skills/assess-change-impact/SKILL.md`
+Tell it to invoke the `assess-change-impact` skill and do the work directly — **skip any instruction inside that skill that says to delegate to a subagent**, since it is already running as one.
 
 ---
 
