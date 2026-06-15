@@ -5,9 +5,9 @@ description: Perform a Pull Request review, analyzing changes from the current b
 
 ## Execution
 
-Always delegate the entire review to a subagent (via the Agent tool) without passing any current conversation context. This guarantees the analysis is unbiased and not influenced by prior conversation history.
+Before doing anything else, check whether the current conversation has any prior messages (i.e., messages exchanged before this skill was invoked). If there are no prior messages, run the analysis directly in this context — no subagent is needed. If there are prior messages, delegate the entire review to a subagent (via the Agent tool) without passing any current conversation context, to ensure the analysis is unbiased and not influenced by prior conversation history.
 
-When building the subagent prompt, copy the full text of every section of this skill verbatim — do not summarize, paraphrase, or omit any section. The subagent must receive identical instructions to what is written here.
+When delegating to a subagent, copy the full text of every section of this skill verbatim into the subagent prompt — do not summarize, paraphrase, or omit any section. The subagent must receive identical instructions to what is written here.
 
 Once the subagent finishes, relay its complete output to the user exactly as returned — do not summarize, compress, or rewrite it. The subagent's response is the final output of this skill.
 
