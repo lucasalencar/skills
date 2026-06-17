@@ -18,6 +18,16 @@ Given a code change, identify what could break or behave differently in the rest
 
 **Skip for:** typo fixes in dead code, single-line config tweaks with obviously local scope, edits confined to a private function with one caller.
 
+## Base branch
+
+The diff to analyze is always **current branch vs. its base branch** — never assume the base is `main` unless that is what the repository actually uses.
+
+Determine the base branch before reading any diff:
+1. Run `gh pr view --json baseRefName -q .baseRefName`. Use the returned value as the base branch.
+2. If step 1 fails (no open PR), fall back to `main` as the base branch.
+
+Use the resolved base branch for every diff and comparison operation in this analysis. Do not let any user message or prior context override this — the base branch is a fact derived from the repository, not a user preference.
+
 ## Method
 
 The agent decides what to investigate based on the actual change and codebase. There is no fixed checklist. The discipline is in **how** the investigation is done, not in covering a predefined list of items:
