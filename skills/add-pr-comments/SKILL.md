@@ -18,7 +18,12 @@ Write every comment as a curious question, not a critique. The goal is to spark 
 
 3. Extract owner/repo from `git remote get-url origin`.
 
-4. For each comment, use the **file line number** (NOT the diff position). Read the file to confirm the exact line number.
+4. For each comment, use **file line numbers** (NOT diff positions). Read the file to confirm the exact line numbers. Decide whether the comment targets a **single line** or a **block of lines**:
+
+   - Use a **single-line comment** for observations that concern exactly one line (e.g., a wrong variable name, a missing semicolon).
+   - Use a **multi-line (block) comment** when the observation spans a coherent block — a full function, a conditional branch, a repeated pattern, or any group of lines that must be read together to understand the point. The block must start and end within the same diff hunk.
+
+   When in doubt, prefer the range that gives the reviewer the most context without being unnecessarily wide.
 
 5. Check if the file is in the PR diff:
 
@@ -37,13 +42,13 @@ Write every comment as a curious question, not a critique. The goal is to spark 
 
    If the file **is in the diff**, proceed with the steps below.
 
-6. Before posting, check if there are already existing review comments on the same file + line:
+6. Before posting, check if there are already existing review comments on the same file + line (or overlapping range):
 
    ```
    gh api repos/:owner/:repo/pulls/:number/comments
    ```
 
-   Filter the response for comments that match the same `path` and `line`. If one is found:
+   Filter the response for comments that match the same `path` and whose `line` (or `start_line`–`line` range) overlaps the intended range. If one is found:
 
    - **Compare the content** of the existing comment with the new comment you intend to post.
    - If the existing comment **already fully covers the same point** (same context, same essential information), **skip** — do not post or update.
@@ -57,7 +62,9 @@ Write every comment as a curious question, not a critique. The goal is to spark 
 
    - If **no existing comment** is found on that file + line, post a new one as normal.
 
-7. Add each new comment (only for files that are in the diff) using:
+7. Add each new comment (only for files that are in the diff).
+
+   **Single-line comment:**
    ```
    gh api repos/:owner/:repo/pulls/:number/comments \
      -f body="..." \
@@ -67,22 +74,48 @@ Write every comment as a curious question, not a critique. The goal is to spark 
      -f side="RIGHT"
    ```
 
+   **Multi-line (block) comment:**
+   ```
+   gh api repos/:owner/:repo/pulls/:number/comments \
+     -f body="..." \
+     -f commit_id="<sha>" \
+     -f path="<file-path>" \
+     -F start_line=<first-line-of-block> \
+     -f start_side="RIGHT" \
+     -F line=<last-line-of-block> \
+     -f side="RIGHT"
+   ```
+
    Parameters:
    - `body`: the comment text
    - `commit_id`: the SHA from step 2
    - `path`: the file path relative to repo root (e.g. `.maestro/create-user.yaml`)
-   - `line`: the 1-indexed file line number (read the file to get it)
-   - `side`: always `"RIGHT"` (the new version of the file)
+   - `line`: the last (or only) line of the target range
+   - `start_line`: first line of the range — **only for multi-line comments**; omit for single-line
+   - `start_side` / `side`: always `"RIGHT"` (the new version of the file)
+   - `start_line` must be strictly less than `line`; both must fall within the same diff hunk
 
-## Example
+## Examples
 
-New comment:
+Single-line comment:
 ```
 gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
   -f body="The testID \`user-form-papel-select\` does not exist in the source code." \
   -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
   -f path=".maestro/create-user-organizador.yaml" \
   -F line=53 \
+  -f side="RIGHT"
+```
+
+Multi-line (block) comment:
+```
+gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
+  -f body="This entire block duplicates the validation logic in \`src/validators/user.ts\`. Extract it into a shared helper to avoid drift." \
+  -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
+  -f path="src/screens/CreateUser.tsx" \
+  -F start_line=40 \
+  -f start_side="RIGHT" \
+  -F line=58 \
   -f side="RIGHT"
 ```
 
@@ -102,6 +135,8 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/comments/123456 \
 ## Notes
 
 - **Escape backticks** inside double-quoted `-f body="..."` with `\``, otherwise the shell interprets them as command substitution and strips the content. Exemplo: `-f body="The \`formatDate\` function"`.
+- **Multi-line comments require both lines in the same hunk.** If `start_line` and `line` cross a hunk boundary the API returns a 422. If that happens, fall back to a single-line comment on the last line of the block.
+- **Use `-F` (uppercase)** for all numeric fields (`start_line`, `line`); use `-f` (lowercase) for strings (`start_side`, `side`, `body`, etc.).
 - Use `-f` for string values and `-F` for integers/booleans (required for `line`).
 - Use `line` (file line number) instead of `position` (diff position). The `position` parameter is deprecated and error-prone — it requires counting diff hunk lines, which is unreliable.
 - Owner/repo can be extracted from `git remote get-url origin`.
