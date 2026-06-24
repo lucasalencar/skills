@@ -8,7 +8,9 @@ Skills are instructions and prompts that extend the capabilities of AI agents, e
 
 The skills here are personal — developed and refined through my own experience with AI Agents. Some of them are inspirations or adaptations of interesting skills shared by the community online. Where applicable, the original source is credited within the skill itself.
 
-Some skills are synced from [Matt Pocock's skills repository](https://github.com/mattpocock/skills) — a great open collection of AI agent skills worth checking out.
+Some skills are synced from external sources:
+- [Matt Pocock's skills repository](https://github.com/mattpocock/skills) — a great open collection of AI agent skills
+- [Hunk's skills repository](https://github.com/modem-dev/hunk) — specialized skills for code review and development workflows
 
 ## Structure
 
@@ -27,6 +29,7 @@ skills/
 | [assess-change-impact](skills/assess-change-impact/SKILL.md) | Analyze a code change for non-obvious ripple effects across the system. Use before merge to surface semantic shifts, symmetric code paths, and latent bugs hidden behind a seemingly local change. |
 | [commit-push](skills/commit-push/SKILL.md) | Commit (if necessary) and push changes to the origin branch, with guidance on branch naming and commit splitting. |
 | [grill-me](skills/grill-me/SKILL.md) | Interview you relentlessly about a plan or design, resolving each branch of the decision tree until reaching shared understanding. |
+| [hunk-review](skills/hunk-review/SKILL.md) | Interact with live Hunk diff review sessions via CLI. Inspects review focus, navigates files and hunks, and adds inline review comments for interactive diff review. |
 | [improve-codebase-architecture](skills/improve-codebase-architecture/SKILL.md) | Find deepening opportunities in a codebase. Surfaces architectural friction and proposes refactors that turn shallow modules into deep, testable, AI-navigable ones. |
 | [open-pr](skills/open-pr/SKILL.md) | Create a new pull request based on the changes in the current branch, following repository PR templates and conventions. |
 | [pr-review](skills/pr-review/SKILL.md) | Perform a Pull Request review, checking for bugs, typos, security flaws, performance issues, and simplification opportunities. |
@@ -34,13 +37,23 @@ skills/
 
 ## Syncing from external sources
 
-Some skills are synced from [mattpocock/skills](https://github.com/mattpocock/skills). To update them:
+Skills are synced from external repositories using dedicated scripts. Each script clones the source repo into `.sources/` (gitignored) on first run, then pulls updates on subsequent runs, and copies the selected skills into `skills/`.
+
+### Matt Pocock's skills
 
 ```bash
 ./scripts/sync-mattpocock-skills
 ```
 
-The script clones the source repo into `.sources/` (gitignored) on first run, then pulls updates on subsequent runs, and copies the selected skills into `skills/`. To change which skills are synced, edit the `SKILLS_TO_SYNC` array in `scripts/sync-mattpocock-skills`.
+To change which skills are synced, edit the `SKILLS_TO_SYNC` array in `scripts/sync-mattpocock-skills`.
+
+### Hunk's skills
+
+```bash
+./scripts/sync-hunk-skills
+```
+
+To change which skills are synced, edit the `SKILLS_TO_SYNC` array in `scripts/sync-hunk-skills`.
 
 ## Contributing
 
