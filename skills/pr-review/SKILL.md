@@ -15,7 +15,7 @@ Once the subagent finishes, relay its complete output to the user exactly as ret
 
 1. Determine the base branch: run `gh pr view --json baseRefName -q .baseRefName` to get the base branch from the open PR. If that fails (no PR exists), fall back to `main`. Use this base branch for all diff and comparison operations throughout the review.
 2. Fetch PR details and diff between the current branch and the base branch determined above.
-3. Review for bugs, typos, security flaws, and performance issues.
+3. Review for bugs, typos, security flaws, and performance issues. For error handling and retry paths, verify that each attempt has a real chance of succeeding differently — check that any state mutations or side effects from the failed attempt are undone before retrying, and that error messages accurately reflect whether recovery actually occurred.
 4. Check for premature optimizations that reduce readability.
 5. Look for opportunities to simplify and clarify the code.
 6. Use PR description and comments as extra context about changes.
