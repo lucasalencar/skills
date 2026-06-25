@@ -7,6 +7,7 @@ For each skill listed below, call it in a subagent following the globally specif
 
 - `pr-review`
 - `assess-change-impact`
+- `code-review`
 
 ## Output
 
