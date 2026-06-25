@@ -13,15 +13,27 @@ Once the subagent finishes, relay its complete output to the user exactly as ret
 
 ## Steps
 
-1. Determine the base branch: run `gh pr view --json baseRefName -q .baseRefName` to get the base branch from the open PR. If that fails (no PR exists), fall back to `main`. Use this base branch for all diff and comparison operations throughout the review.
-2. Fetch PR details and diff between the current branch and the base branch determined above.
-3. Review for bugs, typos, security flaws, and performance issues. For error handling and retry paths, verify that each attempt has a real chance of succeeding differently — check that any state mutations or side effects from the failed attempt are undone before retrying, and that error messages accurately reflect whether recovery actually occurred.
-4. Check for premature optimizations that reduce readability.
-5. Look for opportunities to reduce cognitive load: flag code that is hard to read at a glance — long functions, deeply nested conditionals, or names that describe implementation rather than intent. Suggest extractions or renames that would let a reader understand what the code does without having to trace through how it does it.
-6. Use PR description and comments as extra context about changes.
-7. Identify refactoring opportunities: flag code that could be extracted, renamed, or restructured for clarity. Also search the codebase for existing patterns, utilities, or abstractions that the new code could reuse instead of reimplementing.
-8. Search the full codebase for duplications: logic, structure, or patterns introduced or modified in the diff that already exist (or nearly exist) elsewhere in the project — not just within the diff itself. Also look for literal values (strings, numbers, identifiers) that duplicate an existing named constant — these create silent drift risk if the canonical definition changes.
-9. Evaluate test quality: for each new or modified test, verify that the assertions exercise real implementation logic. Flag tests that only assert on mock behavior (e.g. verifying that a mock was called, or asserting on values the test itself injected) — these give false confidence because they test the test setup, not the code under test.
+1. Determine the base branch: run `gh pr view --json baseRefName -q .baseRefName`. If that fails, fall back to `main`.
+2. Fetch the PR diff, description, and comments.
+3. Review the diff against each dimension below and list all findings.
+
+## Review dimensions
+
+**Correctness**
+- Bugs, typos, security flaws, and performance issues.
+- For error handling and retry paths, verify that each attempt has a real chance of succeeding differently — check that any state mutations or side effects from the failed attempt are undone before retrying, and that error messages accurately reflect whether recovery actually occurred.
+
+**Readability**
+- Premature optimizations that trade readability for performance.
+- Code that is hard to read at a glance — long functions, deeply nested conditionals, or names that describe implementation rather than intent. Suggest extractions or renames that would let a reader understand what the code does without having to trace through how it does it.
+
+**Reuse and duplication**
+- Code that could be extracted, renamed, or restructured for clarity. Search the codebase for existing patterns, utilities, or abstractions that the new code could reuse instead of reimplementing.
+- Literal values (strings, numbers, identifiers) that duplicate an existing named constant — these create silent drift risk if the canonical definition changes.
+- Logic, structure, or patterns introduced or modified in the diff that already exist (or nearly exist) elsewhere in the project.
+
+**Test quality**
+- Assertions that only exercise mock behavior (e.g. verifying that a mock was called, or asserting on values the test itself injected) — these give false confidence because they test the test setup, not the code under test.
 
 ## Output instructions
 
