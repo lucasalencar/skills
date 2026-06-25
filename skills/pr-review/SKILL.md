@@ -20,7 +20,7 @@ Once the subagent finishes, relay its complete output to the user exactly as ret
 5. Look for opportunities to simplify and clarify the code.
 6. Use PR description and comments as extra context about changes.
 7. Identify refactoring opportunities: flag code that could be extracted, renamed, or restructured for clarity. Also search the codebase for existing patterns, utilities, or abstractions that the new code could reuse instead of reimplementing.
-8. Search the full codebase for duplications: logic, structure, or patterns introduced or modified in the diff that already exist (or nearly exist) elsewhere in the project — not just within the diff itself.
+8. Search the full codebase for duplications: logic, structure, or patterns introduced or modified in the diff that already exist (or nearly exist) elsewhere in the project — not just within the diff itself. Also look for literal values (strings, numbers, identifiers) that duplicate an existing named constant — these create silent drift risk if the canonical definition changes.
 9. Evaluate test quality: for each new or modified test, verify that the assertions exercise real implementation logic. Flag tests that only assert on mock behavior (e.g. verifying that a mock was called, or asserting on values the test itself injected) — these give false confidence because they test the test setup, not the code under test.
 
 ## Output instructions
