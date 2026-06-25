@@ -11,7 +11,7 @@ Run `branch-review` repeatedly, applying in-scope fixes after each iteration, un
 
 1. Run the `branch-review` skill.
 2. Classify each finding as **in-scope** or **out-of-scope**:
-   - **In-scope**: can be fixed within the current branch without expanding its purpose (bugs, readability issues, test gaps, duplications introduced by this branch).
+   - **In-scope**: can be fixed within the current branch without expanding its purpose
    - **Out-of-scope**: requires work outside this branch — pre-existing issues, refactors that go beyond the branch's intent, or new features.
 3. If there are in-scope findings:
    - Apply all in-scope fixes directly to the code.
@@ -29,3 +29,4 @@ Stop after 5 iterations regardless of findings to avoid infinite loops. Report a
 After the loop ends, present:
 - A summary of all fixes applied, grouped by iteration.
 - Any out-of-scope findings identified but not addressed, with a brief explanation of why they fall outside the branch scope.
+- A short list of pending decisions that require the user's attention — trade-offs, ambiguous scope calls, or findings that could go either way.
