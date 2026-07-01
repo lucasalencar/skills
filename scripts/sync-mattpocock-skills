@@ -12,6 +12,7 @@ CLONE_DIR="$SOURCES_DIR/$REPO_NAME"
 SKILLS_TO_SYNC=(
   "engineering/improve-codebase-architecture"
   "engineering/grill-with-docs"
+  "engineering/tdd"
   "productivity/grill-me"
 )
 
@@ -41,4 +42,4 @@ for skill_path in "${SKILLS_TO_SYNC[@]}"; do
 done
 
 echo ""
-echo "Done. Run ./install to reinstall into your agent tools (needed if using --method=cp)."
+echo "Done. Run ./scripts/install to reinstall into your agent tools (needed if using --method=cp)."
