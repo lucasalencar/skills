@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Commit (if necessary) changes on the current branch
+description: Use this skill whenever you are about to commit changes for the user — ALWAYS load it before running `git commit`, whether the user explicitly asked for a commit or it's a step within a larger task. Covers branch checks, splitting into atomic commits, and push confirmation.
 ---
 
 ## Steps
