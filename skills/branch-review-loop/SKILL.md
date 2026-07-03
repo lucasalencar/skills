@@ -9,7 +9,7 @@ Run `branch-review` repeatedly, applying in-scope fixes after each iteration, un
 
 ## Steps
 
-1. Run the `branch-review` skill.
+1. Run the `branch-review` skill in full — every iteration of this loop, including the second, third, and beyond, must invoke all of the subagent skills that `branch-review` specifies. Do not shortcut later iterations to a single subagent or a subset; each pass through step 1 is a brand-new, complete `branch-review` run.
 2. Classify each finding as **in-scope** or **out-of-scope**:
    - **In-scope**: can be fixed within the current branch without expanding its purpose
    - **Out-of-scope**: requires work outside this branch — pre-existing issues, refactors that go beyond the branch's intent, or new features.
