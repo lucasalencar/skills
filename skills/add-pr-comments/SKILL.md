@@ -7,6 +7,10 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
 
 Write every comment as a curious question, not a critique. The goal is to spark dialogue and understanding, not to judge. Frame observations as genuine curiosity about the author's intent — "Why did you choose X here?", "I'm wondering if Y could work here too — what do you think?", "Could this cause Z? Curious what your reasoning was." Avoid declarative statements like "this is wrong" or "you should". If something looks like a bug or a concern, ask about it.
 
+## Language
+
+This skill is for adding **new** review comments, so write them in the same language used in the PR's title and description (`gh pr view --json title,body`), regardless of the language the user asked in.
+
 ## Steps
 
 1. Identify the PR number with `gh pr view --json number` (or from the branch name / user context).
