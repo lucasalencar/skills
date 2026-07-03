@@ -1,20 +1,28 @@
 ---
-name: commit-push
-description: Commit (if necessary) and push changes to origin branch
+name: commit
+description: Commit (if necessary) changes on the current branch
 ---
 
 ## Steps
 
-1. Check logs to see if push is necessary and exit instantly if already
-   up-to-date.
-2. Check if current branch is main or master and ask if the user wants to create
+1. Check if current branch is main or master and ask if the user wants to create
    a branch before commiting. Suggest a branch name.
-3. Check for changes in the current branch and commit them
-4. Push changes to origin branch
+2. Check for changes in the current branch and commit them
+3. Ask the user whether they want to push these changes to origin now.
+   - If auto-push mode is already active for this session (see below), skip
+     this question and push automatically instead.
+   - If they say yes, push, then enable auto-push mode: from this point on,
+     keep pushing automatically after every commit made in this session
+     (whether via this skill or otherwise) without asking again, until the
+     user explicitly says to stop.
+   - If they say no, do not push, and do not enable auto-push mode.
+   - Default is not to push: if the user invokes the skill without specifying
+     a push preference and doesn't give a clear answer to this question, do
+     not push and do not enable auto-push mode.
 
 ## Guidelines
 
-- Avoid commiting and pushing every unstaged file. Use the chat context to decide
+- Avoid commiting every unstaged file. Use the chat context to decide
     which changes the user wants to commit.
 - Prefer small, focused commits over large ones. When the working tree contains
     multiple distinct changes, split them into separate commits — one per logical
