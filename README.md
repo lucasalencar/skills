@@ -33,6 +33,7 @@ skills/
 | [improve-codebase-architecture](skills/improve-codebase-architecture/SKILL.md) | Find deepening opportunities in a codebase. Surfaces architectural friction and proposes refactors that turn shallow modules into deep, testable, AI-navigable ones. |
 | [open-pr](skills/open-pr/SKILL.md) | Create a new pull request based on the changes in the current branch, following repository PR templates and conventions. |
 | [pr-review](skills/pr-review/SKILL.md) | Perform a Pull Request review, checking for bugs, typos, security flaws, performance issues, and simplification opportunities. |
+| [resolve-hunk-comments](skills/resolve-hunk-comments/SKILL.md) | Fetch the review comments the user left in a live Hunk session and address them in the current code. |
 | [resolve-pr-comments](skills/resolve-pr-comments/SKILL.md) | Fetch Pull Request comments and resolve them by applying suggested changes or replying with reasoning when a suggestion conflicts with prior decisions. |
 
 ## Syncing from external sources
