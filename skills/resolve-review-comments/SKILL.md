@@ -27,10 +27,12 @@ For each comment:
    - Read the actual code at the relevant location.
    - Assess whether the suggestion is correct, necessary, and beneficial given the current implementation.
    - If it conflicts with previous decisions (conversation history, plan, codebase patterns), factor that in — explain the reasoning instead of blindly applying.
+   - **Check scope.** Compare the suggestion against the scope already defined for the branch (PR/change description, linked issue, plan, or the diff's stated purpose). A suggestion is scope-expanding if applying it would go beyond that — e.g. touching unrelated code, adding functionality the branch wasn't meant to cover, or growing the change into a different problem.
    - Classify and act:
      - **Apply automatically** — clearly correct and confirmed by the code (obvious bugs, simple improvements, clear style fixes). Apply without asking.
      - **Apply with note** — sound but involves trade-offs worth surfacing. Apply and record the reasoning.
      - **Ask the user** — ambiguous, has significant downsides, or can't be fully evaluated from the code alone. Pause and ask before proceeding.
+     - **Scope-expanding suggestions always need confirmation**, even if they'd otherwise be apply-automatically or apply-with-note: surface that it grows the branch's scope and wait for the user to confirm before applying.
 
 5. **Mixed comments** — address the question per step 3 and the suggestion per step 4. Answering the question is not a substitute for evaluating the suggestion, and vice versa.
 
