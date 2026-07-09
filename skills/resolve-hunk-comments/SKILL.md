@@ -10,7 +10,7 @@ description: Fetch the review comments the user left in a live Hunk session and 
    - If there are none, tell the user and stop.
 3. For each comment, navigate to it (`hunk session navigate --repo . --file <path> --new-line <n>` or `--old-line <n>`) to read the surrounding code, then load the `resolve-review-comments` skill and run its triage process (classify intent, handle questions, evaluate and act on suggestions). Where that process says "reply" or "record", note it for the final summary instead of posting anywhere.
 4. Do not remove or clear comments from the session (`comment rm`/`comment clear`) — leave that to the user, since the comments are their own review notes.
-5. Do not commit changes automatically. If the user wants to commit afterward, use the `commit` skill.
+5. When all comments are addressed, use the `commit` skill to commit the changes.
 
 ## Output
 
