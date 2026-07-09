@@ -16,7 +16,8 @@ description: Fetch Pull Request comments and resolve them according to the sugge
    - If it is a **suggestion**, just apply the change without posting a reply.
 4. If a comment goes against previous definitions from a plan or chat history,
    reply explaining the reasoning instead of blindly applying.
-5. When all comments are addressed, commit and push changes.
+5. When all comments are addressed, use the `commit` skill to commit and push
+   the changes.
 
 ## Output instructions
 
