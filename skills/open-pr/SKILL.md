@@ -7,7 +7,7 @@ description: Create a new pull request based on the changes made in the current 
 
 1. Check difference between current branch and main
 2. Recover any pull request templates if available (.github folder)
-3. Push local changes in case it wasn't done yet — follow the [commit-push](../commit-push/SKILL.md) skill for commit and push instructions
+3. Push local changes in case it wasn't done yet — follow the [commit](../commit/SKILL.md) skill for commit and push instructions
 4. Create Pull Request using `gh` CLI tool — always as **draft** (`--draft` flag) unless the user explicitly asks for a ready-for-review PR
 
 ## Output instructions
