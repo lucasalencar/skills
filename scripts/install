@@ -20,6 +20,7 @@ get_target_dir() {
     cursor)   echo "$HOME/.cursor/skills" ;;
     gemini)   echo "$HOME/.gemini/prompts" ;;
     opencode) echo "$HOME/.config/opencode/skills" ;;
+    codex)    echo "${CODEX_HOME:-$HOME/.codex}/skills" ;;
   esac
 }
 
@@ -160,14 +161,14 @@ if [ -z "$1" ]; then
   info "Auto-detecting installed agents..."
 
   detected=()
-  for agent in claude cursor gemini opencode; do
+  for agent in claude cursor gemini opencode codex; do
     if is_agent_installed "$agent"; then
       detected+=("$agent")
     fi
   done
 
   if [ ${#detected[@]} -eq 0 ]; then
-    fail "No agents detected. Install manually with: $0 <agent>\nAvailable agents: claude, cursor, gemini, opencode"
+    fail "No agents detected. Install manually with: $0 <agent>\nAvailable agents: claude, cursor, gemini, opencode, codex"
   fi
 
   info "Detected agents: ${detected[*]}"
@@ -176,17 +177,17 @@ if [ -z "$1" ]; then
   done
 else
   case "$1" in
-    claude|cursor|gemini|opencode)
+    claude|cursor|gemini|opencode|codex)
       install_for_agent "$1"
       ;;
     all)
       info "Installing for all agents..."
-      for agent in claude cursor gemini opencode; do
+      for agent in claude cursor gemini opencode codex; do
         install_for_agent "$agent"
       done
       ;;
     *)
-      fail "Unknown agent: $1\nAvailable agents: claude, cursor, gemini, opencode, all"
+      fail "Unknown agent: $1\nAvailable agents: claude, cursor, gemini, opencode, codex, all"
       ;;
   esac
 fi

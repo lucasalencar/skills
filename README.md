@@ -4,6 +4,27 @@ This repository brings together all the skills I use across the various AI Agent
 
 Skills are instructions and prompts that extend the capabilities of AI agents, enabling them to perform specific tasks more efficiently.
 
+## Installation
+
+Install the skills for a specific tool with:
+
+```bash
+./scripts/install <agent>
+```
+
+For Codex, this creates symbolic links by default in `$CODEX_HOME/skills` (or
+`~/.codex/skills` when `CODEX_HOME` is unset):
+
+```bash
+./scripts/install codex
+```
+
+Use `./scripts/install` to auto-detect installed tools, or
+`./scripts/install all` to install for every supported tool. The installer uses
+symbolic links (`--method=ln`) by default, so edits in this repository are
+available immediately. Use `--method=cp` to make independent copies; rerun the
+installer after any skill changes in that case.
+
 ## About the skills
 
 The skills here are personal — developed and refined through my own experience with AI Agents. Some of them are inspirations or adaptations of interesting skills shared by the community online. Where applicable, the original source is credited within the skill itself.
