@@ -52,7 +52,7 @@ skills/
 | [grill-me](skills/grill-me/SKILL.md) | Interview you relentlessly about a plan or design, resolving each branch of the decision tree until reaching shared understanding. |
 | [hunk-review](skills/hunk-review/SKILL.md) | Interact with live Hunk diff review sessions via CLI. Inspects review focus, navigates files and hunks, and adds inline review comments for interactive diff review. |
 | [improve-codebase-architecture](skills/improve-codebase-architecture/SKILL.md) | Find deepening opportunities in a codebase. Surfaces architectural friction and proposes refactors that turn shallow modules into deep, testable, AI-navigable ones. |
-| [implement](skills/implement/SKILL.md) | Implement a requested change with test-driven development, then review and improve the branch until no in-scope findings remain. |
+| [implement-plan](skills/implement-plan/SKILL.md) | Explicitly invoked implementation workflow: use test-driven development, then review and improve the branch until no in-scope findings remain. |
 | [open-pr](skills/open-pr/SKILL.md) | Create a new pull request based on the changes in the current branch, following repository PR templates and conventions. |
 | [pr-review](skills/pr-review/SKILL.md) | Perform a Pull Request review, checking for bugs, typos, security flaws, performance issues, and simplification opportunities. |
 | [resolve-hunk-comments](skills/resolve-hunk-comments/SKILL.md) | Fetch the review comments the user left in a live Hunk session and address them in the current code. |
