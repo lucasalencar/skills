@@ -7,7 +7,8 @@ Call all three of the following skills below, each in its own subagent, followin
 
 - `pr-review`
 - `assess-change-impact`
-- `code-review`
+- `code-review` (Claude Code specific skill)
+- `review` (Codex specific command)
 
 ## Output
 
