@@ -30,6 +30,10 @@ description: Use this skill whenever you are about to commit changes for the use
 - Each commit must be atomic and self-contained: it should represent one coherent
     change, leave the project in a working state (not broken mid-refactor), and
     have a message that clearly explains what that specific change does and why.
+- Add a commit body when the subject alone would omit useful context, such as the
+    motivation, behavioral impact, or a significant decision behind the change.
+    Keep it to a few concise sentences or short paragraphs; do not use lengthy
+    descriptions, multiple sections, or exhaustive implementation detail.
 - The commit history should read as a sensible progression of atomic steps. If
     you find yourself writing a commit message with "and" joining unrelated
     changes, that's a signal to split it into multiple commits.
