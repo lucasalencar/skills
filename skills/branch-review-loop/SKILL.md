@@ -1,23 +1,24 @@
 ---
 name: branch-review-loop
-description: Iteratively reviews and improves branch changes by running branch-review, applying in-scope fixes, and re-running until no actionable findings remain within the branch scope.
+description: Iteratively reviews and improves branch changes by running branch-review, selecting only justified in-scope fixes, deferring premature performance or concurrency optimizations as follow-ups, and re-running until no actionable findings remain within the branch scope.
 ---
 
 ## Objective
 
-Run `branch-review` repeatedly, applying in-scope fixes after each iteration, until the review returns no findings that can be addressed within the current branch.
+Run `branch-review` repeatedly, applying only justified in-scope fixes after each iteration, until the review returns no findings that should be addressed within the current branch. Keep the resulting PR focused and reviewable; do not add defensive complexity for speculative or rare scenarios.
 
 ## Steps
 
 1. Run the `branch-review` skill in full — every iteration of this loop, including the second, third, and beyond, must invoke all of the subagent skills that `branch-review` specifies. Do not shortcut later iterations to a single subagent or a subset; each pass through step 1 is a brand-new, complete `branch-review` run.
-2. Classify each finding as **in-scope** or **out-of-scope**:
-   - **In-scope**: can be fixed within the current branch without expanding its purpose
+2. Classify each finding as **in-scope**, **follow-up**, or **out-of-scope**:
+   - **In-scope**: can be fixed within the current branch without expanding its purpose and improves correctness, clarity, maintainability, or a demonstrated requirement.
+   - **Follow-up**: proposes premature performance or concurrency optimization, extra defensive code for speculative or rare scenarios, or complexity whose benefit is not demonstrated by the branch's requirements, production evidence, profiling, or a reproducible issue. Do not implement it in this loop; record it for later consideration.
    - **Out-of-scope**: requires work outside this branch — pre-existing issues, refactors that go beyond the branch's intent, or new features.
 3. If there are in-scope findings:
-   - Apply all in-scope fixes directly to the code.
+   - Apply all justified in-scope fixes directly to the code.
    - Commit the changes with a message describing what was fixed.
    - Go back to step 1.
-4. If there are no in-scope findings (either no findings at all, or all findings are out-of-scope):
+4. If there are no in-scope findings (either no findings at all, or all findings are follow-ups or out-of-scope):
    - Stop the loop.
 
 ## Safeguard
@@ -28,5 +29,6 @@ Stop after 5 iterations regardless of findings to avoid infinite loops. Report a
 
 After the loop ends, present:
 - A summary of all fixes applied, grouped by iteration.
+- Follow-ups not implemented, especially premature performance or concurrency optimizations, with the triggering comment and the evidence needed before reconsidering them.
 - Any out-of-scope findings identified but not addressed, with a brief explanation of why they fall outside the branch scope.
 - A short list of pending decisions that require the user's attention — trade-offs, ambiguous scope calls, or findings that could go either way.
