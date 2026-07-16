@@ -23,7 +23,7 @@ Run `branch-review` repeatedly, applying only justified in-scope fixes after eac
 
 ## Safeguard
 
-Stop after 5 iterations regardless of findings to avoid infinite loops. Report any remaining in-scope findings as unresolved.
+Stop after 7 iterations regardless of findings to avoid infinite loops. Report any remaining in-scope findings as unresolved.
 
 ## Output
 
