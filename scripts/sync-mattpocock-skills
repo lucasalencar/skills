@@ -10,6 +10,9 @@ CLONE_DIR="$SOURCES_DIR/$REPO_NAME"
 # Skills to sync — paths relative to skills/ in the source repo
 # Format: "category/skill-name"
 SKILLS_TO_SYNC=(
+  "engineering/setup-matt-pocock-skills"
+  "engineering/to-spec"
+  "engineering/to-tickets"
   "engineering/codebase-design"
   "engineering/domain-modeling"
   "engineering/improve-codebase-architecture"
