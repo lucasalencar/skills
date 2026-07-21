@@ -9,7 +9,9 @@ Use one of two collaborative tones, choosing the one that best fits the review p
 
 1. **Genuine question:** Use a direct question when you need the author's context or reasoning to evaluate the code, or when there are multiple plausible approaches. For example: "Why did you choose X here?", "Could this cause Z?", or "Would Y also need to change when this value changes?"
 
-2. **Direct suggestion:** When the issue and practical improvement are clear, state the problem and recommendation plainly. End the comment with an invitation to discuss, such as **"What do you think?"** or **"How about doing that?"** For example: "This duplicates the validation logic in `src/validators/user.ts`. Extract it into a shared helper to avoid drift. What do you think?"
+2. **Direct suggestion:** When the issue and practical improvement are clear, state the problem and recommendation plainly. Give the comment a natural progression: **observation → consequence → recommended action → invitation to engage**. Make the invitation specific to the suggestion instead of attaching a generic suffix. For example: "This duplicates the validation logic in `src/validators/user.ts`, so the two paths can drift. Could we extract it into a shared helper?" or "Centralizing this validation in `src/validators/user.ts` would keep the behavior consistent. Would that fit the intended ownership of this logic?"
+
+Vary the final invitation across comments. Do not default to or repeatedly reuse **"What do you think?"**. Choose a closing that flows from the recommendation: **"Could we…?"**, **"Would it make sense to…?"**, **"Would you be open to…?"**, **"Does that fit the intended…?"**, **"How does that sound?"**, or, when it is genuinely natural, **"What do you think?"** / **"How about doing that?"**.
 
 Do not turn a clear recommendation into an indirect question just for politeness. Conversely, do not present an uncertain concern as a directive: ask a genuine question when the author's intent or missing context matters. Avoid judgmental phrasing such as "this is wrong".
 
@@ -110,7 +112,7 @@ This skill is for adding **new** review comments, so write them in the same lang
 Single-line comment:
 ```
 gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
-  -f body="The testID \`user-form-papel-select\` does not exist in the source code. Check whether it was renamed or removed. What do you think?" \
+  -f body="The testID \`user-form-papel-select\` does not exist in the source code, so this scenario cannot find the target element. Would it make sense to check whether it was renamed or removed?" \
   -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
   -f path=".maestro/create-user-organizador.yaml" \
   -F line=53 \
@@ -120,7 +122,7 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
 Multi-line (block) comment:
 ```
 gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
-  -f body="This entire block duplicates the validation logic in \`src/validators/user.ts\`. Extract it into a shared helper to avoid drift. How about doing that?" \
+  -f body="This entire block duplicates the validation logic in \`src/validators/user.ts\`, which can cause the two implementations to drift. Could we extract it into a shared helper?" \
   -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
   -f path="src/screens/CreateUser.tsx" \
   -F start_line=40 \
@@ -132,14 +134,14 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
 General PR comment (file not in diff):
 ```
 gh api repos/tecMTST/app-vitoria-mobile/issues/72/comments \
-  -f body="**File: \`src/utils/helpers.ts\` (line 120)** — The \`formatDate\` function appears to be duplicated. Unify it with the version in \`src/helpers/date.ts\` to keep the behavior in one place. What do you think?"
+  -f body="**File: \`src/utils/helpers.ts\` (line 120)** — The \`formatDate\` function appears to be duplicated. Centralizing it in \`src/helpers/date.ts\` would keep the behavior in one place. Would you be open to reusing that version here?"
 ```
 
 Update existing comment:
 ```
 gh api repos/tecMTST/app-vitoria-mobile/pulls/comments/123456 \
   -X PATCH \
-  -f body="The testID \`user-form-papel-select\` does not exist in the source code. Check whether it was renamed or removed. What do you think?"
+  -f body="The testID \`user-form-papel-select\` does not exist in the source code, so this scenario cannot find the target element. Would it make sense to check whether it was renamed or removed?"
 ```
 
 ## Notes
