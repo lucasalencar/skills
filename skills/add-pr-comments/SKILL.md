@@ -5,7 +5,13 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
 
 ## Tone
 
-Write every comment as a curious question, not a critique. The goal is to spark dialogue and understanding, not to judge. Frame observations as genuine curiosity about the author's intent — "Why did you choose X here?", "I'm wondering if Y could work here too — what do you think?", "Could this cause Z? Curious what your reasoning was." Avoid declarative statements like "this is wrong" or "you should". If something looks like a bug or a concern, ask about it.
+Use one of two collaborative tones, choosing the one that best fits the review point. The goal is to make the underlying concern and proposed next step clear without sounding judgmental.
+
+1. **Genuine question:** Use a direct question when you need the author's context or reasoning to evaluate the code, or when there are multiple plausible approaches. For example: "Why did you choose X here?", "Could this cause Z?", or "Would Y also need to change when this value changes?"
+
+2. **Direct suggestion:** When the issue and practical improvement are clear, state the problem and recommendation plainly. End the comment with an invitation to discuss, such as **"What do you think?"** or **"How about doing that?"** For example: "This duplicates the validation logic in `src/validators/user.ts`. Extract it into a shared helper to avoid drift. What do you think?"
+
+Do not turn a clear recommendation into an indirect question just for politeness. Conversely, do not present an uncertain concern as a directive: ask a genuine question when the author's intent or missing context matters. Avoid judgmental phrasing such as "this is wrong".
 
 ## Language
 
@@ -104,7 +110,7 @@ This skill is for adding **new** review comments, so write them in the same lang
 Single-line comment:
 ```
 gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
-  -f body="The testID \`user-form-papel-select\` does not exist in the source code." \
+  -f body="The testID \`user-form-papel-select\` does not exist in the source code. Check whether it was renamed or removed. What do you think?" \
   -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
   -f path=".maestro/create-user-organizador.yaml" \
   -F line=53 \
@@ -114,7 +120,7 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
 Multi-line (block) comment:
 ```
 gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
-  -f body="This entire block duplicates the validation logic in \`src/validators/user.ts\`. Extract it into a shared helper to avoid drift." \
+  -f body="This entire block duplicates the validation logic in \`src/validators/user.ts\`. Extract it into a shared helper to avoid drift. How about doing that?" \
   -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
   -f path="src/screens/CreateUser.tsx" \
   -F start_line=40 \
@@ -126,14 +132,14 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
 General PR comment (file not in diff):
 ```
 gh api repos/tecMTST/app-vitoria-mobile/issues/72/comments \
-  -f body="**File: \`src/utils/helpers.ts\` (line 120)** — The \`formatDate\` function appears to be duplicated. Consider unifying it with the version in \`src/helpers/date.ts\`."
+  -f body="**File: \`src/utils/helpers.ts\` (line 120)** — The \`formatDate\` function appears to be duplicated. Unify it with the version in \`src/helpers/date.ts\` to keep the behavior in one place. What do you think?"
 ```
 
 Update existing comment:
 ```
 gh api repos/tecMTST/app-vitoria-mobile/pulls/comments/123456 \
   -X PATCH \
-  -f body="The testID \`user-form-papel-select\` does not exist in the source code. Check if it was renamed or removed."
+  -f body="The testID \`user-form-papel-select\` does not exist in the source code. Check whether it was renamed or removed. What do you think?"
 ```
 
 ## Notes
