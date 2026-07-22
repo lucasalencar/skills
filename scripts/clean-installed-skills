@@ -12,20 +12,49 @@ TARGETS=(
   "${CODEX_HOME:-$HOME/.codex}/skills"
 )
 
-removed=0
+removed_symlinks=0
 for target_dir in "${TARGETS[@]}"; do
   [ -d "$target_dir" ] || continue
 
   for installed in "$target_dir"/*; do
     [ -L "$installed" ] || continue
-    skill_name=$(basename "$installed")
-    canonical="$SKILLS_SOURCE/$skill_name"
 
-    if [ ! -d "$canonical" ]; then
+    # Resolve the absolute path of the symlink's target
+    # abs_path returns empty on broken symlinks (macOS)
+    resolved=$(perl -MCwd -e 'print Cwd::abs_path(shift)' "$installed" 2>/dev/null || true)
+    raw_target=$(readlink "$installed")
+
+    if [ -z "$resolved" ]; then
+      # Broken symlink → remove regardless of origin
       rm -v "$installed"
-      removed=$((removed + 1))
+      removed_symlinks=$((removed_symlinks + 1))
+    elif [[ "$raw_target" == "$REPO_ROOT/skills/"* ]] && [ ! -d "$raw_target" ]; then
+      # Points to this repo's skills/ but the skill directory was removed
+      rm -v "$installed"
+      removed_symlinks=$((removed_symlinks + 1))
     fi
   done
 done
 
-echo "Removed $removed stale symlink(s)"
+echo "Removed $removed_symlinks stale symlink(s)"
+
+# Clean command files — only remove if the corresponding skill directory
+# is gone from the repo (install_skill_commands only ever creates these
+# for skills that exist in $SKILLS_SOURCE at install time)
+COMMANDS_DIR="$HOME/.config/opencode/commands"
+removed_commands=0
+if [ -d "$COMMANDS_DIR" ]; then
+  for cmd_file in "$COMMANDS_DIR"/*.md; do
+    [ -f "$cmd_file" ] || continue
+    skill_name="${cmd_file##*/}"
+    skill_name="${skill_name%.md}"
+    canonical="$SKILLS_SOURCE/$skill_name"
+
+    if [ ! -d "$canonical" ]; then
+      rm -v "$cmd_file"
+      removed_commands=$((removed_commands + 1))
+    fi
+  done
+fi
+
+echo "Removed $removed_commands stale command(s)"
