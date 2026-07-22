@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spin Off Branch"
+  short_description: "Extract independent work into a PR branch"
+  default_prompt: "Use $spin-off-branch to extract independent work into a main-based branch and rebase my current branch onto it."
