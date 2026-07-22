@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SKILLS_SOURCE="$REPO_ROOT/skills"
+
+TARGETS=(
+  "$HOME/.config/opencode/skills"
+  "$HOME/.claude/skills"
+  "$HOME/.cursor/skills"
+  "$HOME/.gemini/prompts"
+  "${CODEX_HOME:-$HOME/.codex}/skills"
+)
+
+removed=0
+for target_dir in "${TARGETS[@]}"; do
+  [ -d "$target_dir" ] || continue
+
+  for installed in "$target_dir"/*; do
+    [ -L "$installed" ] || continue
+    skill_name=$(basename "$installed")
+    canonical="$SKILLS_SOURCE/$skill_name"
+
+    if [ ! -d "$canonical" ]; then
+      rm -v "$installed"
+      removed=$((removed + 1))
+    fi
+  done
+done
+
+echo "Removed $removed stale symlink(s)"
