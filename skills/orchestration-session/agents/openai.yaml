@@ -1,0 +1,7 @@
+interface:
+  display_name: "Orchestration Session"
+  short_description: "Delegate work and track agent progress"
+  default_prompt: "Use $orchestration-session to coordinate this work exclusively through subagents."
+
+policy:
+  allow_implicit_invocation: false

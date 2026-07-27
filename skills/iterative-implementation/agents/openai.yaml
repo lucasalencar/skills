@@ -1,0 +1,7 @@
+interface:
+  display_name: "Iterative Implementation"
+  short_description: "Deliver dependency-ordered changes in iterations"
+  default_prompt: "Use iterative-implementation to plan and deliver these tasks in dependency-ordered iterations."
+
+policy:
+  allow_implicit_invocation: false
