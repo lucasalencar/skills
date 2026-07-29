@@ -18,6 +18,7 @@ SKILLS_TO_SYNC=(
   "engineering/improve-codebase-architecture"
   "engineering/grill-with-docs"
   "engineering/tdd"
+  "engineering/research"
   "productivity/grilling"
   "productivity/grill-me"
 )
