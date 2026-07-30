@@ -1,0 +1,44 @@
+{
+  "skill_name": "iterative-implementation",
+  "evals": [
+    {
+      "id": 0,
+      "name": "clean-parallel-task-map",
+      "prompt": "I broke down the 'checkout redesign' feature into tasks in our tracker. Here they are with IDs and dependencies:\n\n- CHK-101: Add new CartSummary component (no deps)\n- CHK-102: Add PaymentMethodSelector component (no deps)\n- CHK-103: Wire CartSummary into checkout page (depends on CHK-101)\n- CHK-104: Wire PaymentMethodSelector into checkout page (depends on CHK-102)\n- CHK-105: Add checkout page integration test (depends on CHK-103, CHK-104)\n- CHK-106: Update analytics tracking for checkout funnel (depends on CHK-105)\n\nCan you plan out how we should deliver this iteratively? I only want you to do the next ready level for now, don't run ahead.",
+      "expected_output": "Skill identifies 4 levels: L1 = CHK-101, CHK-102 (parallel, no deps); L2 = CHK-103 (depends on 101), CHK-104 (depends on 102), also parallel; L3 = CHK-105 (depends on 103+104); L4 = CHK-106 (depends on 105). Presents the tree/level list and notes which tasks in each level can run in parallel. Since the user authorized only the next ready level, it should say it will implement only L1 (CHK-101, CHK-102) now and stop there rather than continuing through later levels. Should NOT actually delegate to subagents or create branches/PRs in this dry run — describe what it would do next (branch from main, one PR per task, implement-plan skill, etc).",
+      "files": [],
+      "assertions": [
+        {"name": "levels-correct", "description": "Identifies exactly 4 levels with correct membership: L1={CHK-101,CHK-102}, L2={CHK-103,CHK-104}, L3={CHK-105}, L4={CHK-106}."},
+        {"name": "parallelism-noted", "description": "Explicitly states that CHK-101/CHK-102 (and separately CHK-103/CHK-104) can be worked on in parallel within their level."},
+        {"name": "scope-respected", "description": "Proposes implementing only level 1 (CHK-101, CHK-102) now, since the user asked for only the next ready level, not further levels."},
+        {"name": "delegation-described", "description": "Describes per-task subagent delegation with one-task-one-PR, branch-from-main, and use of the implement-plan/open-pr skills — without actually invoking tools to create real branches, commits, or PRs."}
+      ]
+    },
+    {
+      "id": 1,
+      "name": "dependency-cycle",
+      "prompt": "Here's the task breakdown for our 'notification preferences' epic:\n\n- NOTIF-1: Add preferences schema migration (depends on NOTIF-3)\n- NOTIF-2: Build preferences API endpoints (depends on NOTIF-1)\n- NOTIF-3: Build preferences UI (depends on NOTIF-2)\n- NOTIF-4: Add email digest toggle (depends on NOTIF-2)\n\nPlease plan how to deliver this in iterations.",
+      "expected_output": "Skill detects that NOTIF-1 -> NOTIF-3 -> NOTIF-2 -> NOTIF-1 forms a cycle and flags it clearly before proposing any levels or delegating implementation. It should explain which tasks are involved in the cycle and ask the user to resolve/clarify the dependencies rather than guessing an order. NOTIF-4 (depends only on NOTIF-2, which is inside the cycle) should also be called out as blocked until the cycle is resolved.",
+      "files": [],
+      "assertions": [
+        {"name": "cycle-detected", "description": "Explicitly identifies the NOTIF-1 -> NOTIF-3 -> NOTIF-2 -> NOTIF-1 cycle by name/ID, not just a vague 'something looks off'."},
+        {"name": "no-premature-plan", "description": "Does not present a confident final level/order plan before flagging the cycle — the cycle is surfaced first, as a blocker."},
+        {"name": "notif4-flagged", "description": "Notes that NOTIF-4 is blocked/affected because it depends on NOTIF-2, which is part of the cycle."},
+        {"name": "asks-for-resolution", "description": "Asks the user to resolve or clarify the cyclical dependency rather than silently picking an arbitrary order."}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "missing-dependency",
+      "prompt": "Task list for 'search relevance' project:\n\n- SRCH-10: Add BM25 scoring module (no deps)\n- SRCH-11: Add query rewriting service (depends on SRCH-10)\n- SRCH-12: Integrate reranker into search pipeline (depends on SRCH-11, SRCH-09)\n- SRCH-13: Add relevance eval harness (depends on SRCH-12)\n\nCan you help me plan the delivery order for these?",
+      "expected_output": "Skill notices SRCH-12 references SRCH-09, which does not appear anywhere in the supplied task list, and flags this as a missing/unresolved dependency before presenting a final level plan. It should ask the user to clarify what SRCH-09 is (or confirm it's already done/out of scope) rather than silently dropping the dependency or guessing. It may still present the plan for the unambiguous part of the graph (SRCH-10, SRCH-11) while marking SRCH-12/SRCH-13 as blocked pending clarification.",
+      "files": [],
+      "assertions": [
+        {"name": "missing-dep-detected", "description": "Flags SRCH-09 as referenced by SRCH-12 but absent from the supplied task list."},
+        {"name": "partial-plan-given", "description": "Still proposes an order for the unambiguous portion of the graph (SRCH-10, then SRCH-11)."},
+        {"name": "blocked-tasks-flagged", "description": "Marks SRCH-12 and SRCH-13 as blocked/pending until SRCH-09 is clarified, rather than assigning them to a level."},
+        {"name": "asks-for-clarification", "description": "Asks the user what SRCH-09 is or whether it's already done/out of scope, instead of silently dropping or assuming it."}
+      ]
+    }
+  ]
+}
