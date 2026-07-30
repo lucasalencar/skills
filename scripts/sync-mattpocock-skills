@@ -20,6 +20,7 @@ SKILLS_TO_SYNC=(
   "engineering/tdd"
   "engineering/research"
   "engineering/wayfinder"
+  "engineering/prototype"
   "productivity/grilling"
   "productivity/grill-me"
 )
