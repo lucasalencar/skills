@@ -5,18 +5,24 @@ description: Fetch Pull Request comments and resolve them according to the sugge
 
 ## Steps
 
-1. Fetch Pull Request comments from current branch.
-2. Load the `resolve-review-comments` skill and run its triage process for
+1. Before fetching comments, verify the local branch is up to date with its
+   remote: fetch and compare local HEAD against the remote HEAD. If the
+   remote has moved (e.g. rebased or updated by someone else), ask the user
+   whether to rebase the local branch onto the remote before proceeding —
+   don't rebase without confirmation, to avoid unexpected changes or lost
+   work.
+2. Fetch Pull Request comments from current branch.
+3. Load the `resolve-review-comments` skill and run its triage process for
    each comment (classify intent, handle questions, evaluate and act on
    suggestions). Where that process says "reply" or "record", post it as a
    reply on the PR comment thread.
-3. For comments authored by the PR owner:
+4. For comments authored by the PR owner:
    - If it is a **question**, reply with the answer to document it in the
      thread — no code change unless the answer reveals a real problem.
    - If it is a **suggestion**, just apply the change without posting a reply.
-4. If a comment goes against previous definitions from a plan or chat history,
+5. If a comment goes against previous definitions from a plan or chat history,
    reply explaining the reasoning instead of blindly applying.
-5. When all comments are addressed, use the `commit` skill to commit and push
+6. When all comments are addressed, use the `commit` skill to commit and push
    the changes.
 
 ## Output instructions
