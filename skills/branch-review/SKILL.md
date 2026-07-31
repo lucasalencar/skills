@@ -3,12 +3,12 @@ name: branch-review
 description: Reviews branch changes by running pr-review and assess-change-impact in parallel subagents. Use when asked to review a branch, do a full review before merge, or check what a branch changes and what it might break.
 ---
 
-Call all three of the following skills below, each in its own subagent, following the globally specified guidelines. This applies identically on every invocation of this skill — first call or the tenth in a row within a loop: never skip, merge, or substitute any of the three.
+Call every applicable skill below, each in its own subagent, following the globally specified guidelines. This applies identically on every invocation of this skill — first call or the tenth in a row within a loop: never skip, merge, or substitute any applicable one.
 
-- `pr-review`
-- `assess-change-impact`
-- `code-review` (Claude Code specific skill)
-- `review` (Codex specific command)
+- `pr-review` — always
+- `assess-change-impact` — always
+- `code-review` — only when the current client is Claude Code; it does not exist elsewhere, so skip it entirely on any other client, do not attempt to invoke or emulate it
+- `review` — only when the current client is Codex; it does not exist elsewhere, so skip it entirely on any other client, do not attempt to invoke or emulate it
 
 ## Output
 
