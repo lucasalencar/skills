@@ -13,4 +13,8 @@ Keep this session exclusively for coordination and a high-level view of the work
 4. If the user asks for status, consult the agents and provide a concise high-level update.
 5. When work is complete, consolidate the agents' reports: completed work, conclusions, changed artifacts, validation, and open items.
 
+## Stall management
+
+Periodically check any agent running unusually long. Identify what it's waiting on and confirm the wait is legitimate — i.e. backed by another agent actually producing that output — rather than a dependency that stalled, was never dispatched, or will never resolve. If the wait isn't justified, cancel the stalled agent instead of letting the session idle indefinitely.
+
 Do not replace delegated work with your own execution. If a task cannot be delegated, state that limitation.
