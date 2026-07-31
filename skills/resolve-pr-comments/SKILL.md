@@ -6,11 +6,18 @@ description: Fetch Pull Request comments and resolve them according to the sugge
 ## Steps
 
 1. Before fetching comments, verify the local branch is up to date with its
-   remote: fetch and compare local HEAD against the remote HEAD. If the
-   remote has moved (e.g. rebased or updated by someone else), ask the user
-   whether to rebase the local branch onto the remote before proceeding —
-   don't rebase without confirmation, to avoid unexpected changes or lost
-   work.
+   remote: `git fetch`, then check whether local HEAD is an ancestor of the
+   remote HEAD (`git merge-base --is-ancestor HEAD @{u}`).
+   - If local HEAD is an ancestor of remote HEAD (no unpushed local commits)
+     and the working tree is clean, fast-forward automatically
+     (`git merge --ff-only`) — this only moves the branch pointer, no commit
+     is rewritten, so there's nothing to lose.
+   - Otherwise — local has unpushed commits, the remote history was rewritten
+     (force-push/rebase/amend, so local HEAD is no longer an ancestor), or the
+     working tree has uncommitted changes — ask the user before rebasing.
+     Don't rebase without confirmation in these cases, since replaying local
+     commits on top of diverged/rewritten history risks conflicts and lost
+     work.
 2. Fetch Pull Request comments from current branch.
 3. Load the `resolve-review-comments` skill and run its triage process for
    each comment (classify intent, handle questions, evaluate and act on
