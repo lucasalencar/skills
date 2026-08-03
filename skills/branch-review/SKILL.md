@@ -7,6 +7,8 @@ Determine the base branch once: run `gh pr view --json baseRefName -q .baseRefNa
 
 Call every applicable item below, each in its own subagent, following the globally specified guidelines. This applies identically on every invocation of this skill — first call or the tenth in a row within a loop: never skip, merge, or substitute any applicable one. Re-read this file fresh on every invocation before dispatching subagents — do not rely on what you recall doing in a previous iteration within this same conversation. A previous iteration's subagent prompts are not a template to reuse or abbreviate; rebuild every subagent prompt from this file and its reference files from scratch, every time.
 
+Dispatch every subagent from both sections below — independent skills and PR review dimensions — together, in a single batch of parallel tool calls. Do not wait for the independent skills to finish before starting the dimension subagents, and do not stagger them into separate rounds for any other reason: build every prompt first, then launch all of them at once.
+
 ## Independent skills
 
 Each bullet is the name of an actual skill. The subagent prompt for each one must explicitly instruct the subagent to load and follow that skill (e.g. "Invoke the skill named `assess-change-impact`, then follow it fully") — never paraphrase or reconstruct the skill's behavior from memory instead of loading it, and never omit this instruction because a prior iteration already included it.
