@@ -37,6 +37,15 @@ Example:
 
 Keep the tree current as agents change state — regenerate it rather than describing deltas in prose when reporting status. Pull Jira/PR IDs from the agent's own report; do not guess or fabricate an ID if the agent didn't provide one.
 
+## Jira synchronization
+
+When a card has an associated PR, the card's Jira status must track that PR's real state, not just the state you last reported. Each time you gather a status update (per the tree above), transition the Jira card to match:
+- PR opened / work started → move the card out of its initial state into in progress (if not already).
+- PR opened for review → move the card to in review.
+- PR merged and deployed → move the card to done.
+
+Only transition a card when you have direct evidence of the underlying PR state from an agent's report (or your own check) — never advance a card speculatively. If a card's current Jira status already matches, skip the transition. Treat this sync as part of every status update, not a separate step the user has to request.
+
 ## Stall management
 
 Periodically check any agent running unusually long. Identify what it's waiting on and confirm the wait is legitimate — i.e. backed by another agent actually producing that output — rather than a dependency that stalled, was never dispatched, or will never resolve. If the wait isn't justified, cancel the stalled agent instead of letting the session idle indefinitely.
