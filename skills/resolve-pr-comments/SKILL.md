@@ -36,3 +36,4 @@ description: Fetch Pull Request comments and resolve them according to the sugge
 
 - Comment text must match language used in the comment. Default is English.
 - Keep replies concise: answer the specific question or point raised, nothing more. Only reference a file or code snippet when it's actually needed to make the answer clear — skip it otherwise.
+- Append a short signature at the end of each posted reply disclosing it was AI-generated, naming the client in use (e.g. Claude Code, Codex) with the model in parentheses (e.g. "— reply generated with <client> (<model name>)").
