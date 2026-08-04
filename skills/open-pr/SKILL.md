@@ -5,14 +5,16 @@ description: Create a new pull request based on the changes made in the current 
 
 ## Steps
 
-1. Check difference between current branch and main
-2. Recover any pull request templates if available (.github folder)
-3. Push local changes in case it wasn't done yet — follow the [commit](../commit/SKILL.md) skill for commit and push instructions
-4. Create Pull Request using `gh` CLI tool — always as **draft** (`--draft` flag) unless the user explicitly asks for a ready-for-review PR
+1. Resolve the pull request base branch. Use a base supplied by the invoking workflow; otherwise use `main`. For an existing PR, preserve its current base unless the caller explicitly requests a retarget.
+2. Check the difference between the current branch and the resolved base branch.
+3. Recover any pull request templates if available (`.github` folder).
+4. Push local changes in case it wasn't done yet — follow the [commit](../commit/SKILL.md) skill for commit and push instructions.
+5. Create the pull request with the resolved base branch using `gh pr create --base <base-branch>`. Always create it as a **draft** (`--draft`) unless the user explicitly asks for a ready-for-review PR.
 
 ## Output instructions
 
 - Provide a title and description for the Pull Request.
+- State the pull request's base branch when returning the result.
 - Text must be in English, unless requested to use another language.
 - When branch is referencing some Jira ticket, include the ticket ID in
     the PR title like `[Ticket ID]`.
