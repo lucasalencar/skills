@@ -13,6 +13,7 @@ Treat the task map as a dependency graph. Coordinate the work; never implement a
 - Give each task one dedicated subagent, isolated worktree, branch, and PR.
 - Keep implementation, validation, commits, and PR scope task-specific. Never combine tasks, even when small.
 - Dispatch only tasks whose required fields and branch/PR bases are known and that have no unresolved blocker.
+- Every PR stays a draft until the user explicitly says to mark it ready for review. Green CI is not that signal, and neither is the task being complete — the user reviews the work first. Never mark a PR ready, and never instruct a subagent to, without that explicit instruction.
 
 ## Workflow
 
@@ -54,7 +55,7 @@ Before coding:
 Implementation:
 - Invoke implement-plan and continue until complete or externally blocked.
 - Keep all edits, commits, validation, and the PR limited to this task.
-- Open one PR with open-pr, targeting the PR base.
+- Open one PR with open-pr, targeting the PR base. Open it as a draft and leave it there — do not mark it ready for review, and do not transition the Jira card past In Progress. The user decides when the PR is ready.
 
 Report back:
 - Jira status, worktree path, branch, PR URL and state, validation and results, and blockers.
@@ -88,7 +89,11 @@ First map the project's workflow states equivalent to In Progress, In Review, an
 | Evidence | Jira state |
 | --- | --- |
 | Work started, branch pushed, or draft PR open | In Progress |
-| PR ready for review | In Review |
+| Complete and green, but still a draft | In Progress |
+| PR marked ready for review, on the user's explicit instruction | In Review |
 | PR merged and no deployment gate applies, or deployment confirmed | Done |
+
+A complete, green PR stays In Progress. Report it as ready for the user's review and ask
+whether to mark the PR ready; only then transition to In Review.
 
 Synchronize Jira whenever gathering status, using the verified PR state or direct subagent evidence. Skip no-op transitions. If a required deployment is unconfirmed, do not mark the task Done; report the blocker. Update a parent only from direct evidence or its documented aggregation rule.
