@@ -1,20 +1,25 @@
 ---
 name: orchestration-session
-description: Start an orchestration-only session for a request. Use when the user invokes `/orchestration-session` and wants all task execution and exploration delegated to subagents, keeping the current session focused on orchestration and a high-level view of progress.
+description: Coordinate a request exclusively through delegated subagents while keeping the current session focused on planning, routing, progress, and synthesis. Use only when the user explicitly invokes `/orchestration-session` or `$orchestration-session` and wants all investigation and execution delegated.
 ---
 
 # Orchestration session
 
-Keep this session exclusively for coordination and a high-level view of the work. Do not research, inspect files, edit code, or use task-execution tools here. Delegate all implementation, investigation, and exploration to subagents.
+Act only as the coordinator. Delegate investigation, implementation, artifact inspection, validation, and other task execution. In this session, use only orchestration capabilities and information returned by subagents; do not inspect or modify task artifacts or independently reproduce their work.
 
-1. Delegate each request to one or more subagents with clear context, scope, and expected outcome. Use parallel agents when the work has independent parts. On Claude Code only: when a request involves multiple stages of the same process (e.g. fan-out then merge, or review → verify → synthesize), use the Workflow tool instead of plain ad hoc subagent calls — the user invoking `/orchestration-session` is itself the explicit opt-in for multi-agent orchestration that tool requires, so proceed without asking again. Workflow gives that multi-stage work deterministic control flow, named phases, and progress grouped under `/workflows`, which plain subagent calls don't provide. This does not apply on other clients, where the Workflow tool does not exist — use plain subagents there as described above.
-2. Classify each delegated task before dispatch: use a mid-tier model if the task follows a fixed, well-defined procedure (e.g. invoking `ask-pr-review`, `resolve-pr-comments`), or if it has a closed spec (target file/function identified, expected behavior unambiguous, follows an existing pattern) AND is isolated (no reasoning about effects across unrelated files/systems). Otherwise use the client's top-tier model.
-3. Tell the user the initial delegation plan, then monitor agents and report meaningful progress, decisions, and blockers without bringing unrelated task details into this session.
-4. If the user asks for status, consult the agents and provide a concise high-level update. If there are more than a couple of tasks or any dependencies between them, load the `iterative-implementation` skill's dependency tree presentation and render status that way.
-5. When work is complete, consolidate the agents' reports: completed work, conclusions, changed artifacts, validation, and open items.
+## Workflow
+
+1. Divide the request only as much as needed for effective delegation. Give each subagent clear context, scope, constraints, and an expected outcome.
+2. Tell the user the initial delegation plan. Keep it brief and revise it when agents uncover material changes.
+3. When the client supports model selection, choose based on reasoning complexity, ambiguity, and risk rather than task size alone. Use faster or lower-cost models for bounded procedural work with clear acceptance criteria; use more capable models for ambiguous, cross-cutting, high-risk, or synthesis-heavy work.
+4. Delegate independent parts in parallel when capacity permits. Sequence parts only when one genuinely depends on another, and route required results between agents.
+5. Avoid assigning multiple agents to modify the same artifacts concurrently unless their ownership boundaries are explicit and non-conflicting.
+6. Monitor the delegated work and report meaningful progress, decisions, blockers, or changes in scope. Answer status requests from agent reports rather than performing the work directly.
+7. When useful, delegate independent verification and distinguish its findings from claims reported by the agent that performed the work.
+8. At completion, consolidate the agents' reports: completed work, conclusions, changed artifacts, validation, limitations, and open items.
 
 ## Stall management
 
-Periodically check any agent running unusually long. Identify what it's waiting on and confirm the wait is legitimate — i.e. backed by another agent actually producing that output — rather than a dependency that stalled, was never dispatched, or will never resolve. If the wait isn't justified, cancel the stalled agent instead of letting the session idle indefinitely.
+Check agents that run unusually long or stop reporting progress. Ask for status and identify the exact wait condition. Route missing inputs, redirect a stuck approach, or replace the assignment when needed. Stop an agent only when its work is obsolete, duplicated, or cannot make progress.
 
-Do not replace delegated work with your own execution. If a task cannot be delegated, state that limitation.
+Do not replace delegated work with your own execution. If required work cannot be delegated with the available capabilities, report the limitation and ask the user how to proceed.
