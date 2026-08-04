@@ -35,3 +35,4 @@ description: Fetch Pull Request comments and resolve them according to the sugge
 ## Output instructions
 
 - Comment text must match language used in the comment. Default is English.
+- Keep replies concise: answer the specific question or point raised, nothing more. Only reference a file or code snippet when it's actually needed to make the answer clear — skip it otherwise.
