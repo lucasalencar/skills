@@ -10,6 +10,7 @@ Treat the task map as a dependency graph. Coordinate the work; never implement a
 ## Invariants
 
 - Use the Jira ID as each task's primary identifier in prompts, branches, worktrees, and reports. Add a PR number only for navigation.
+- Never reference a PR number without its task's Jira ID immediately alongside it. Use `PROJ-123 (PR #482)`; do not write `PR #482` by itself. Apply this in dispatch prompts, status reports, and recommendations. In a dependency-tree node, the Jira ID at the start of that same node already provides this association, so show only `(PR #482)`.
 - Give each task one dedicated subagent, isolated worktree, branch, and PR.
 - Keep implementation, validation, commits, and PR scope task-specific. Never combine tasks, even when small.
 - Dispatch only tasks whose required fields and branch/PR bases are known and that have no unresolved blocker.
@@ -44,7 +45,7 @@ Send a complete task-specific prompt:
 ```text
 Task: PROJ-123 — <title>
 Scope and acceptance criteria: <task-specific scope>
-Dependencies: <direct Jira IDs, branches/PRs, and merge state>
+Dependencies: <direct Jira IDs, branches, and PRs written as PROJ-123 (PR #482), with merge state>
 Branch base: <branch>
 PR base: <branch>
 
@@ -58,12 +59,12 @@ Implementation:
 - Open one PR with open-pr, targeting the PR base. Open it as a draft and leave it there — do not mark it ready for review, and do not transition the Jira card past In Progress. The user decides when the PR is ready.
 
 Report back:
-- Jira status, worktree path, branch, PR URL and state, validation and results, and blockers.
+- Jira status, worktree path, branch, PR as `PROJ-123 (PR #482)` with its URL and state, validation and results, and blockers.
 ```
 
 ## Dependency tree
 
-For dependent tasks or more than two tasks, use box-drawing characters (`├──`, `└──`, `│`). Start each full node with its status, Jira ID, and title; add its PR number when one exists. Nest a task under its first declared dependency. For additional dependencies, append `also depends on: <IDs>` to the full node and place `↳ <ID>` under each additional dependency. Never duplicate the full node.
+For dependent tasks or more than two tasks, use box-drawing characters (`├──`, `└──`, `│`). Start each full node with its status, Jira ID, and title; add its PR number as `(PR #<number>)` when one exists. The Jira ID at the start of the same node identifies that PR. Nest a task under its first declared dependency. For additional dependencies, append `also depends on: <IDs>` to the full node and place `↳ <ID>` under each additional dependency. Never duplicate the full node.
 
 Statuses: `⚪ not started`, `📝 draft`, `🚧 in progress`, `👀 in review`, `✅ done`.
 
