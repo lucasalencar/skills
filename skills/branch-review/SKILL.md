@@ -15,7 +15,7 @@ Each bullet is the name of an actual skill. The subagent prompt for each one mus
 
 - `assess-change-impact` — always
 - `code-review` — only when the current client is Claude Code; it does not exist elsewhere, so skip it entirely on any other client, do not attempt to invoke or emulate it
-- `review` — only when the current client is Codex; it does not exist elsewhere, so skip it entirely on any other client, do not attempt to invoke or emulate it
+- `review` — invoke when the current client is Codex. Also invoke it when the current client is Claude Code and the Codex plugin is installed: dispatch the review to Codex through that plugin. On any other client, or when that plugin is unavailable, skip it entirely; do not attempt to invoke or emulate it.
 
 ## PR review dimensions
 
