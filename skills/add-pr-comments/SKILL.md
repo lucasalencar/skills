@@ -3,41 +3,27 @@ name: add-pr-comments
 description: Add line-specific review comments on a GitHub Pull Request. Use when the user says "adiciona comentários no PR" or "add comments to the PR" referring to specific review points previously identified.
 ---
 
-## Tone
-
-Use one of two collaborative tones, choosing the one that best fits the review point. The goal is to make the underlying concern and proposed next step clear without sounding judgmental.
-
-1. **Genuine question:** Use a direct question when you need the author's context or reasoning to evaluate the code, or when there are multiple plausible approaches. For example: "Why did you choose X here?", "Could this cause Z?", or "Would Y also need to change when this value changes?"
-
-2. **Direct suggestion:** When the issue and practical improvement are clear, state the problem and recommendation plainly. Give the comment a natural progression: **observation → consequence → recommended action → invitation to engage**. Make the invitation specific to the suggestion instead of attaching a generic suffix. For example: "This duplicates the validation logic in `src/validators/user.ts`, so the two paths can drift. Could we extract it into a shared helper?" or "Centralizing this validation in `src/validators/user.ts` would keep the behavior consistent. Would that fit the intended ownership of this logic?"
-
-Vary the final invitation across comments. Do not default to or repeatedly reuse **"What do you think?"**. Choose a closing that flows from the recommendation: **"Could we…?"**, **"Would it make sense to…?"**, **"Would you be open to…?"**, **"Does that fit the intended…?"**, **"How does that sound?"**, or, when it is genuinely natural, **"What do you think?"** / **"How about doing that?"**.
-
-Do not turn a clear recommendation into an indirect question just for politeness. Conversely, do not present an uncertain concern as a directive: ask a genuine question when the author's intent or missing context matters. Avoid judgmental phrasing such as "this is wrong".
-
-## Language
-
-This skill is for adding **new** review comments, so write them in the same language used in the PR's title and description (`gh pr view --json title,body`), regardless of the language the user asked in.
-
 ## Steps
 
-1. Identify the PR number with `gh pr view --json number` (or from the branch name / user context).
+1. Load and follow `pr-comment-writing` before drafting or posting any comment. Apply its **New review comments** and **Language** instructions.
 
-2. Get the current commit SHA:
+2. Identify the PR number with `gh pr view --json number` (or from the branch name / user context).
+
+3. Get the current commit SHA:
    ```
    git rev-parse HEAD
    ```
 
-3. Extract owner/repo from `git remote get-url origin`.
+4. Extract owner/repo from `git remote get-url origin`.
 
-4. For each comment, use **file line numbers** (NOT diff positions). Read the file to confirm the exact line numbers. Decide whether the comment targets a **single line** or a **block of lines**:
+5. For each comment, use **file line numbers** (NOT diff positions). Read the file to confirm the exact line numbers. Decide whether the comment targets a **single line** or a **block of lines**:
 
    - Use a **single-line comment** for observations that concern exactly one line (e.g., a wrong variable name, a missing semicolon).
    - Use a **multi-line (block) comment** when the observation spans a coherent block — a full function, a conditional branch, a repeated pattern, or any group of lines that must be read together to understand the point. The block must start and end within the same diff hunk.
 
    When in doubt, prefer the range that gives the reviewer the most context without being unnecessarily wide.
 
-5. Check if the file is in the PR diff:
+6. Check if the file is in the PR diff:
 
    ```
    gh api repos/:owner/:repo/pulls/:number/files --jq '.[].filename'
@@ -54,7 +40,7 @@ This skill is for adding **new** review comments, so write them in the same lang
 
    If the file **is in the diff**, proceed with the steps below.
 
-6. Before posting, check if there are already existing review comments on the same file + line (or overlapping range):
+7. Before posting, check if there are already existing review comments on the same file + line (or overlapping range):
 
    ```
    gh api repos/:owner/:repo/pulls/:number/comments
@@ -74,7 +60,7 @@ This skill is for adding **new** review comments, so write them in the same lang
 
    - If **no existing comment** is found on that file + line, post a new one as normal.
 
-7. Add each new comment (only for files that are in the diff).
+8. Add each new comment (only for files that are in the diff).
 
    **Single-line comment:**
    ```
@@ -100,7 +86,7 @@ This skill is for adding **new** review comments, so write them in the same lang
 
    Parameters:
    - `body`: the comment text
-   - `commit_id`: the SHA from step 2
+   - `commit_id`: the SHA from step 3
    - `path`: the file path relative to repo root (e.g. `.maestro/create-user.yaml`)
    - `line`: the last (or only) line of the target range
    - `start_line`: first line of the range — **only for multi-line comments**; omit for single-line
