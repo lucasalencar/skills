@@ -29,16 +29,16 @@ installer after any skill changes in that case.
 
 The skills here are personal — developed and refined through my own experience with AI Agents. Some of them are inspirations or adaptations of interesting skills shared by the community online. Where applicable, the original source is credited within the skill itself.
 
-Some skills are synced from external sources:
-- [Matt Pocock's skills repository](https://github.com/mattpocock/skills) — a great open collection of AI agent skills
-- [Hunk's skills repository](https://github.com/modem-dev/hunk) — specialized skills for code review and development workflows
+Some workflows depend on skills installed through the `mattpocock-skills` plugin. See [Matt Pocock's skills repository](https://github.com/mattpocock/skills) for the source and installation options.
+
+Some skills are synced from [Hunk's skills repository](https://github.com/modem-dev/hunk).
 
 ## Structure
 
 ```
 skills/
   ├── <skill-name>/
-  │     └── README.md   # skill description and instructions
+  │     └── SKILL.md   # skill description and instructions
   └── ...
 ```
 
@@ -46,29 +46,28 @@ skills/
 
 | Skill | Description |
 |-------|-------------|
+| [add-pr-comments](skills/add-pr-comments/SKILL.md) | Add line-specific review comments to a GitHub Pull Request. |
 | [ask-pr-review](skills/ask-pr-review/SKILL.md) | Request a Pull Request review. Runs a fixed baseline (improve description, mark ready) then executes team-specific custom steps. Learns each team's workflow on first use. |
 | [assess-change-impact](skills/assess-change-impact/SKILL.md) | Analyze a code change for non-obvious ripple effects across the system. Use before merge to surface semantic shifts, symmetric code paths, and latent bugs hidden behind a seemingly local change. |
-| [commit-push](skills/commit-push/SKILL.md) | Commit (if necessary) and push changes to the origin branch, with guidance on branch naming and commit splitting. |
-| [grill-me](skills/grill-me/SKILL.md) | Interview you relentlessly about a plan or design, resolving each branch of the decision tree until reaching shared understanding. |
+| [branch-review](skills/branch-review/SKILL.md) | Review branch changes across multiple dimensions and analyze their impact. |
+| [branch-review-loop](skills/branch-review-loop/SKILL.md) | Iteratively review and improve branch changes until no actionable findings remain. |
+| [commit](skills/commit/SKILL.md) | Check, split, commit, and optionally push focused changes safely. |
+| [debug-local-servers](skills/debug-local-servers/SKILL.md) | Investigate local development servers through their tmux pane logs. |
 | [hunk-review](skills/hunk-review/SKILL.md) | Interact with live Hunk diff review sessions via CLI. Inspects review focus, navigates files and hunks, and adds inline review comments for interactive diff review. |
-| [improve-codebase-architecture](skills/improve-codebase-architecture/SKILL.md) | Find deepening opportunities in a codebase. Surfaces architectural friction and proposes refactors that turn shallow modules into deep, testable, AI-navigable ones. |
 | [implement-plan](skills/implement-plan/SKILL.md) | Explicitly invoked implementation workflow: use test-driven development, then review and improve the branch until no in-scope findings remain. |
+| [iterative-implementation](skills/iterative-implementation/SKILL.md) | Coordinate dependency-ordered Jira tasks through isolated subagents, worktrees, branches, and Pull Requests. |
 | [open-pr](skills/open-pr/SKILL.md) | Create a new pull request based on the changes in the current branch, following repository PR templates and conventions. |
-| [pr-review](skills/pr-review/SKILL.md) | Perform a Pull Request review, checking for bugs, typos, security flaws, performance issues, and simplification opportunities. |
+| [orchestration-session](skills/orchestration-session/SKILL.md) | Coordinate a request exclusively through delegated subagents. |
+| [pr-comment-writing](skills/pr-comment-writing/SKILL.md) | Define how to write concise Pull Request comments and replies. |
 | [resolve-hunk-comments](skills/resolve-hunk-comments/SKILL.md) | Fetch the review comments the user left in a live Hunk session and address them in the current code. |
 | [resolve-pr-comments](skills/resolve-pr-comments/SKILL.md) | Fetch Pull Request comments and resolve them by applying suggested changes or replying with reasoning when a suggestion conflicts with prior decisions. |
+| [resolve-review-comments](skills/resolve-review-comments/SKILL.md) | Apply a shared triage process to code review comments. |
+| [spin-off-branch](skills/spin-off-branch/SKILL.md) | Extract independent work into a new branch based on main. |
+| [work-checkout-message](skills/work-checkout-message/SKILL.md) | Generate a prioritized, Slack-ready summary of open Pull Requests. |
 
 ## Syncing from external sources
 
 Skills are synced from external repositories using dedicated scripts. Each script clones the source repo into `.sources/` (gitignored) on first run, then pulls updates on subsequent runs, and copies the selected skills into `skills/`.
-
-### Matt Pocock's skills
-
-```bash
-./scripts/sync-mattpocock-skills
-```
-
-To change which skills are synced, edit the `SKILLS_TO_SYNC` array in `scripts/sync-mattpocock-skills`.
 
 ### Hunk's skills
 
