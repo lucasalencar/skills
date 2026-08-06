@@ -37,6 +37,6 @@ Spawn one subagent per file below. Before building each subagent's prompt, use t
 
 ## Output
 
-Present each subagent's output in full, individually, clearly separated by name (skill name or dimension name). Do not summarize, compress, rewrite, or omit anything from any subagent's response.
+Write each subagent's output to `.reviews/<iteration>/<subagent-name>.md`, using the skill or dimension name for `<subagent-name>` (for example, `.reviews/1/assess-change-impact.md` or `.reviews/1/correctness.md`). When called by `branch-review-loop`, use its 1-based loop number as `<iteration>`; otherwise, use a timestamp. Create the directory as needed. Copy that subagent's output in full, verbatim: do not summarize, compress, rewrite, or omit anything.
 
-After all reports, add a **Summary** section that synthesizes the key points across all of them — highlight the most critical findings, group related issues, and surface any patterns. This summary is additive: it must not replace or suppress anything already reported above.
+In the chat response, return only a **Summary** section that synthesizes the identified issues across all subagents — highlight the most critical findings, group related issues, and surface any patterns. Include the paths to the full report documents.
