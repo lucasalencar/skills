@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Description Writing"
+  short_description: "Frame concise, rationale-led PR descriptions"
+  default_prompt: "Use $pr-description-writing to draft a concise, rationale-led description for this Pull Request."
