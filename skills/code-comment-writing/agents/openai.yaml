@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Comment Writing"
+  short_description: "Write only the comments code cannot express"
+  default_prompt: "Use $code-comment-writing to add or improve comments in this code change."
