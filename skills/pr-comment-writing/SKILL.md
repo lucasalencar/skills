@@ -21,8 +21,10 @@ Vary the final invitation. Do not repeatedly use "What do you think?". Prefer a 
 
 Do not turn a clear recommendation into an indirect question just for politeness. Conversely, do not present an uncertain concern as a directive: ask a genuine question when the author's intent or missing context matters. Avoid judgmental phrasing such as "this is wrong".
 
+## AI disclosure
+
+Append a short signature to every posted new review comment and reply disclosing that it was AI-generated, naming the active client and model, for example: `— comment generated with <client> (<complete model name>)`.
+
 ## Replies
 
 Keep replies concise: answer the specific question or point raised, nothing more. Reference a file or code snippet only when needed to make the reply clear.
-
-Append a short signature to every posted reply disclosing that it was AI-generated, naming the active client and model, for example: `— reply generated with <client> (<model name>)`.

@@ -5,7 +5,7 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
 
 ## Steps
 
-1. Load and follow `pr-comment-writing` before drafting or posting any comment. Apply its **New review comments** and **Language** instructions.
+1. Load and follow `pr-comment-writing` before drafting or posting any comment.
 
 2. Identify the PR number with `gh pr view --json number` (or from the branch name / user context).
 
@@ -148,7 +148,7 @@ After posting all comments, **validate each one** by reading back the response J
 
 1. **Line number**: confirm the `line` field in the response matches the intended line (the `-F line=` value you sent).
 2. **File path**: confirm the `path` field matches the intended file.
-3. **Body content**: confirm the `body` field preserved all text, especially text inside backticks — if backticks were not escaped, the content may be missing.
+3. **Body content and AI disclosure**: confirm the `body` field preserved all text, especially text inside backticks, and ends with the required AI-disclosure signature — if backticks were not escaped, the content may be missing.
 4. **No duplicate comments**: if you accidentally posted the same comment twice, delete the duplicate with `gh api repos/:owner/:repo/pulls/comments/:id -X DELETE`.
 
 If any comment is wrong, **delete and re-post** it with the correct parameters.
