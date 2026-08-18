@@ -1,9 +1,9 @@
 ---
-name: implement-plan
-description: Implement a requested change using test-driven development, commit focused changes, then iteratively review and improve the branch before handing it off. Use only when the user explicitly invokes `$implement-plan`; never load or invoke it automatically.
+name: implement-task
+description: Implement a requested task using test-driven development, commit focused changes, then iteratively review and improve the branch before handing it off. Use only when the user explicitly invokes `$implement-task`; never load or invoke it automatically.
 ---
 
-# Implement Plan
+# Implement Task
 
 ## Workflow
 
