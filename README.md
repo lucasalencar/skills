@@ -25,6 +25,16 @@ symbolic links (`--method=ln`) by default, so edits in this repository are
 available immediately. Use `--method=cp` to make independent copies; rerun the
 installer after any skill changes in that case.
 
+To remove stale installed symlinks and install the current skills in one step,
+run:
+
+```bash
+./scripts/sync-skills <agent>
+```
+
+Omit `<agent>` to auto-detect installed tools. Any install options, such as
+`--method=cp`, are passed through to `scripts/install`.
+
 ## About the skills
 
 The skills here are personal — developed and refined through my own experience with AI Agents. Some of them are inspirations or adaptations of interesting skills shared by the community online. Where applicable, the original source is credited within the skill itself.
