@@ -1,0 +1,4 @@
+interface:
+  display_name: "Assess Complexity Risk"
+  short_description: "Trade guarantees for proportional simplification"
+  default_prompt: "Use $assess-complexity-risk to identify which low-probability risks we can accept to simplify this change."
