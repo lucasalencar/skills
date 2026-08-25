@@ -48,7 +48,7 @@ Spawn one subagent per file below. Load each reference file's current contents b
 
 ## Output
 
-Write each subagent's output to `.reviews/<iteration>/<subagent-name>.md`, using the skill or dimension name for `<subagent-name>` (for example, `.reviews/1/assess-change-impact.md` or `.reviews/1/correctness.md`). When called by `branch-review-loop`, use its 1-based loop number as `<iteration>`; otherwise, use a timestamp. Create the directory as needed. Copy that subagent's output in full, verbatim: do not summarize, compress, rewrite, or omit anything.
+Write all subagent outputs to one report, `.reviews/<iteration>.md`. When called by `branch-review-loop`, use its 1-based loop number as `<iteration>`; otherwise, use a timestamp. Create the directory as needed. Give every subagent its own clearly labeled Markdown section, using the skill or dimension name as the section title. Copy each output in full and verbatim into its section: do not summarize, compress, rewrite, or omit anything.
 
 In the final chat response, return only a **Summary** section that synthesizes the identified issues across all subagents. Merge duplicate reports of the same underlying problem into one finding, retaining all relevant impacts. Report a finding only when it has a concrete, non-speculative impact.
 
@@ -66,4 +66,4 @@ In the final chat response, return only a **Summary** section that synthesizes t
 - Concrete consequence 2, when applicable.
 ```
 
-Each finding needs one or more impact bullets. Use a unique, sequential identifier (`BR-001`, `BR-002`, and so on) wherever that finding appears in the summary. If there are no findings, write `No actionable findings.` After the findings, include the paths to the full report documents.
+Each finding needs one or more impact bullets. Use a unique, sequential identifier (`BR-001`, `BR-002`, and so on) wherever that finding appears in the summary. If there are no findings, write `No actionable findings.` After the findings, include the path to the full report document.
