@@ -26,17 +26,19 @@ Treat the task map as a dependency graph. Coordinate the work; never implement a
 
 ## Branch and PR bases
 
-Determine both bases before dispatch:
+Before choosing bases, classify every declared dependency as effective or redundant. A declared dependency is redundant only when direct Git and PR evidence verifies both that it is merged into the common ancestor/base and that its commits are ancestors of another still-open dependency branch that is a candidate stack base. Jira links alone are not evidence. If merge state, ancestry, or branch contents cannot be verified, keep the dependency effective.
 
-| Dependency state | Branch base | PR base | Ready? |
+Apply the table to the effective dependencies after this reduction:
+
+| Effective dependency state | Branch base | PR base | Ready? |
 | --- | --- | --- | --- |
 | None | `main` | `main` | Yes |
 | One, with an unmerged PR | Dependency branch | Dependency branch | Yes |
 | One, merged | `main` | `main` | Yes |
-| Multiple, any unmerged | — | — | No |
+| Multiple, any unmerged or independent | — | — | No |
 | Multiple, all merged | `main` | `main` | Yes |
 
-When a stacked PR's base merges, retarget the child PR to `main` and verify that its diff contains only the child's work. Start a task with multiple dependencies only after all are merged into `main`; report which prerequisites must merge.
+For example, if `PROJ-124` is merged into `main` and verified as an ancestor of the open `PROJ-125` branch, a task declaring both depends effectively only on `PROJ-125` and may stack on that branch. When a stacked PR's base merges, retarget the child PR to `main` and verify that its diff contains only the child's work. Report every declared dependency and label each as effective or redundant, including the verification used. For multiple effective dependencies, start only after all are merged into `main`; report which prerequisites must merge.
 
 ## Subagent dispatch contract
 
@@ -45,7 +47,7 @@ Send a complete task-specific prompt:
 ```text
 Task: PROJ-123 — <title>
 Scope and acceptance criteria: <task-specific scope>
-Dependencies: <direct Jira IDs, branches, and PRs written as PROJ-123 (PR #482), with merge state>
+Dependencies: <all declared Jira IDs, branches, and PRs written as PROJ-123 (PR #482), with merge state and effective/redundant classification>
 Branch base: <branch>
 PR base: <branch>
 
@@ -64,7 +66,7 @@ Report back:
 
 ## Dependency tree
 
-For dependent tasks or more than two tasks, use box-drawing characters (`├──`, `└──`, `│`). Start each full node with its status, Jira ID, and title; add its PR number as `(PR #<number>)` when one exists. The Jira ID at the start of the same node identifies that PR. Nest a task under its first declared dependency. For additional dependencies, append `also depends on: <IDs>` to the full node and place `↳ <ID>` under each additional dependency. Never duplicate the full node.
+For dependent tasks or more than two tasks, use box-drawing characters (`├──`, `└──`, `│`). Start each full node with its status, Jira ID, and title; add its PR number as `(PR #<number>)` when one exists. The Jira ID at the start of the same node identifies that PR. Nest a task under its first effective dependency. For additional effective dependencies, append `also depends on: <IDs>` to the full node and place `↳ <ID>` under each additional dependency. Annotate declared redundant dependencies on the full node as `satisfied via: <IDs>` so they remain visible without appearing to block readiness. Never duplicate the full node.
 
 Statuses: `⚪ not started`, `📝 draft`, `🚧 in progress`, `👀 in review`, `✅ done`.
 
