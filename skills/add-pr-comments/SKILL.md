@@ -29,11 +29,11 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
    gh api repos/:owner/:repo/pulls/:number/files --jq '.[].filename'
    ```
 
-   If the file path is **NOT in the diff**, post the comment as a **general PR comment** referencing the file and line so the person can locate themselves:
+   If the file path is **NOT in the diff**, post the comment as a **general PR comment** referencing the file and line so the person can locate themselves. Build `<body>` as described in step 8, then run:
 
    ```
    gh api repos/:owner/:repo/issues/:number/comments \
-     -f body="**File: \`<file-path>\` (line <line-number>)** — <comment>"
+     -f body="$body"
    ```
 
    Then **skip** the following steps (do not attempt to post as a diff comment).
@@ -55,17 +55,25 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
      ```
      gh api repos/:owner/:repo/pulls/comments/:comment_id \
        -X PATCH \
-       -f body="<complete content, including the new information>"
+       -f body="$body"
      ```
 
    - If **no existing comment** is found on that file + line, post a new one as normal.
 
-8. Add each new comment (only for files that are in the diff).
+8. Before every create or update request, build the complete comment body with a blank line before the AI-disclosure signature. The API must receive literal newline characters, not the two-character sequence `\\n`. For a shell command, construct it as follows (with the fully drafted comment and signature in the variables):
+
+   ```
+   body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
+   ```
+
+   Use `-f body="$body"` in every request. This applies equally to new inline comments, general PR comments, and updates to existing comments. Keep the disclosure in `ai_signature`, for example `— comment generated with <client> (<complete model name>)`.
+
+9. Add each new comment (only for files that are in the diff).
 
    **Single-line comment:**
    ```
    gh api repos/:owner/:repo/pulls/:number/comments \
-     -f body="..." \
+     -f body="$body" \
      -f commit_id="<sha>" \
      -f path="<file-path>" \
      -F line=<file-line-number> \
@@ -75,7 +83,7 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
    **Multi-line (block) comment:**
    ```
    gh api repos/:owner/:repo/pulls/:number/comments \
-     -f body="..." \
+     -f body="$body" \
      -f commit_id="<sha>" \
      -f path="<file-path>" \
      -F start_line=<first-line-of-block> \
@@ -97,8 +105,11 @@ description: Add line-specific review comments on a GitHub Pull Request. Use whe
 
 Single-line comment:
 ```
+comment="The testID \`user-form-papel-select\` does not exist in the source code, so this scenario cannot find the target element. Would it make sense to check whether it was renamed or removed?"
+ai_signature="— comment generated with <client> (<complete model name>)"
+body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
 gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
-  -f body="The testID \`user-form-papel-select\` does not exist in the source code, so this scenario cannot find the target element. Would it make sense to check whether it was renamed or removed?" \
+  -f body="$body" \
   -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
   -f path=".maestro/create-user-organizador.yaml" \
   -F line=53 \
@@ -107,8 +118,11 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
 
 Multi-line (block) comment:
 ```
+comment="This entire block duplicates the validation logic in \`src/validators/user.ts\`, which can cause the two implementations to drift. Could we extract it into a shared helper?"
+ai_signature="— comment generated with <client> (<complete model name>)"
+body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
 gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
-  -f body="This entire block duplicates the validation logic in \`src/validators/user.ts\`, which can cause the two implementations to drift. Could we extract it into a shared helper?" \
+  -f body="$body" \
   -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
   -f path="src/screens/CreateUser.tsx" \
   -F start_line=40 \
@@ -119,20 +133,26 @@ gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
 
 General PR comment (file not in diff):
 ```
+comment="**File: \`src/utils/helpers.ts\` (line 120)** — The \`formatDate\` function appears to be duplicated. Centralizing it in \`src/helpers/date.ts\` would keep the behavior in one place. Would you be open to reusing that version here?"
+ai_signature="— comment generated with <client> (<complete model name>)"
+body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
 gh api repos/tecMTST/app-vitoria-mobile/issues/72/comments \
-  -f body="**File: \`src/utils/helpers.ts\` (line 120)** — The \`formatDate\` function appears to be duplicated. Centralizing it in \`src/helpers/date.ts\` would keep the behavior in one place. Would you be open to reusing that version here?"
+  -f body="$body"
 ```
 
 Update existing comment:
 ```
+comment="The testID \`user-form-papel-select\` does not exist in the source code, so this scenario cannot find the target element. Would it make sense to check whether it was renamed or removed?"
+ai_signature="— comment generated with <client> (<complete model name>)"
+body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
 gh api repos/tecMTST/app-vitoria-mobile/pulls/comments/123456 \
   -X PATCH \
-  -f body="The testID \`user-form-papel-select\` does not exist in the source code, so this scenario cannot find the target element. Would it make sense to check whether it was renamed or removed?"
+  -f body="$body"
 ```
 
 ## Notes
 
-- **Escape backticks** inside double-quoted `-f body="..."` with `\``, otherwise the shell interprets them as command substitution and strips the content. Exemplo: `-f body="The \`formatDate\` function"`.
+- **Escape backticks** inside double-quoted shell variables with `\``, otherwise the shell interprets them as command substitution and strips the content. Example: `comment="The \`formatDate\` function"`.
 - **Multi-line comments require both lines in the same hunk.** If `start_line` and `line` cross a hunk boundary the API returns a 422. If that happens, fall back to a single-line comment on the last line of the block.
 - **Use `-F` (uppercase)** for all numeric fields (`start_line`, `line`); use `-f` (lowercase) for strings (`start_side`, `side`, `body`, etc.).
 - Use `-f` for string values and `-F` for integers/booleans (required for `line`).
@@ -148,7 +168,7 @@ After posting all comments, **validate each one** by reading back the response J
 
 1. **Line number**: confirm the `line` field in the response matches the intended line (the `-F line=` value you sent).
 2. **File path**: confirm the `path` field matches the intended file.
-3. **Body content and AI disclosure**: confirm the `body` field preserved all text, especially text inside backticks, and ends with the required AI-disclosure signature — if backticks were not escaped, the content may be missing.
+3. **Body content and AI disclosure**: confirm the `body` field preserved all text, especially text inside backticks, and has a blank line before the required AI-disclosure signature. Verify the API returned real line breaks, rather than a visible `\\n` in the body — if backticks were not escaped, the content may be missing.
 4. **No duplicate comments**: if you accidentally posted the same comment twice, delete the duplicate with `gh api repos/:owner/:repo/pulls/comments/:id -X DELETE`.
 
 If any comment is wrong, **delete and re-post** it with the correct parameters.
