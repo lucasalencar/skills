@@ -1,6 +1,6 @@
 ---
 name: work-checkout-message
-description: Generate a daily/weekly checkout message listing the user's open PRs grouped by priority and dependency order. Use whenever the user wants a checkout/standup summary — triggers include "mensagem de checkout", "checkout message", "standup message", "PRs para review", "resumo dos PRs", "mensagem de PRs abertos", "checkout do dia/semana".
+description: Generate a daily/weekly checkout message listing the user's open PRs grouped by priority and dependency order. Use only when the user explicitly invokes this skill (e.g. "/work-checkout-message", "$work-checkout-message", "checkout message", "mensagem de checkout"); never load automatically on generic PR or review requests.
 ---
 
 # Checkout message

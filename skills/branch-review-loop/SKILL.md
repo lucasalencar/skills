@@ -1,6 +1,6 @@
 ---
 name: branch-review-loop
-description: Iteratively review and auto-fix branch changes. Use whenever the user wants a review loop that fixes findings — triggers include "revisar e corrigir", "review loop", "revisa até ficar ok", "iterar review", "corrigir tudo do review", "branch review loop", or wants branch-review repeated until no actionable findings remain.
+description: Iteratively review and auto-fix branch changes by running branch-review in a loop. Use only when the user explicitly invokes this skill (e.g. "/branch-review-loop", "$branch-review-loop", "roda o branch-review-loop"); never load automatically on generic review requests. Use branch-review for normal reviews.
 ---
 
 ## Objective

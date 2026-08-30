@@ -1,6 +1,6 @@
 ---
 name: spin-off-branch
-description: Extract independent work from the current branch into a new branch based on main and rebase the original on top. Use whenever the user wants to split a branch — triggers include "separar branch", "extrair branch", "spin off branch", "split branch", "criar PR separado", "separar parte do PR", or wants an independent PR that can merge earlier.
+description: Extract independent work from the current branch into a new branch based on main and rebase the original on top. Use only when the user explicitly invokes this skill (e.g. "/spin-off-branch", "$spin-off-branch", "spin off branch"); never load automatically on generic branch or PR requests.
 ---
 
 # Spin Off Branch
