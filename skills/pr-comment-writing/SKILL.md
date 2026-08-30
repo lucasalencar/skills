@@ -1,6 +1,6 @@
 ---
 name: pr-comment-writing
-description: Define how to write Pull Request review comments and replies, including language, tone, concision, and AI disclosure. Use before drafting or posting a comment or reply on a Pull Request.
+description: Define style for Pull Request review comments and replies (tone, concision, AI disclosure). Use whenever drafting or posting a PR comment or reply — triggers include "escrever comentário de PR", "responder comentário do PR", "review comment", "PR comment style", or before any skill that posts PR comments (add-pr-comments, resolve-pr-comments).
 ---
 
 # Pull Request comment writing

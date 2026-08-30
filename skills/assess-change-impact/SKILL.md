@@ -1,6 +1,6 @@
 ---
 name: assess-change-impact
-description: Analyze a code change for non-obvious ripple effects across the rest of the system. Use after AI-generated edits, before merge, to surface semantic shifts, symmetric code paths, test fixture antipatterns, and latent bugs hidden behind a change that looks local. Language- and project-agnostic. Trigger when the user asks for "impact analysis", "what else could break", "did this change anything else", "review the blast radius of these changes", or wants a pre-merge safety check on AI-generated edits.
+description: Analyze a code change for non-obvious ripple effects and blast radius. Use whenever the user wants an impact analysis — triggers include "analisar impacto", "verificar impacto", "impact analysis", "what else could break", "o que mais pode quebrar", "blast radius", "efeito colateral", "vai quebrar algo", or wants a pre-merge safety check on AI-generated edits. Surfaces semantic shifts, symmetric paths, and latent bugs.
 ---
 
 ## Execution

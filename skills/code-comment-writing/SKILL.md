@@ -1,6 +1,6 @@
 ---
 name: code-comment-writing
-description: Write, revise, or remove source-code comments and test-case descriptions so they capture context the code cannot express. Use when adding docstrings, function documentation, module comments, inline comments, or test descriptions, and when reviewing code for excessive, redundant, or verbose commentary.
+description: Write, revise, or remove source-code comments and test descriptions to capture context the code cannot express. Use whenever the user wants to add or clean up comments — triggers include "adicionar comentário no código", "melhorar comentários", "code comments", "docstring", "documentar função", "limpar comentários", or wants to review excessive/redundant commentary.
 ---
 
 # Code comment writing

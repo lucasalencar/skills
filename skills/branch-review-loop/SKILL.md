@@ -1,6 +1,6 @@
 ---
 name: branch-review-loop
-description: Iteratively reviews and improves branch changes by running branch-review, selecting only justified in-scope fixes, deferring premature performance or concurrency optimizations as follow-ups, and re-running until no actionable findings remain within the branch scope.
+description: Iteratively review and auto-fix branch changes. Use whenever the user wants a review loop that fixes findings — triggers include "revisar e corrigir", "review loop", "revisa até ficar ok", "iterar review", "corrigir tudo do review", "branch review loop", or wants branch-review repeated until no actionable findings remain.
 ---
 
 ## Objective

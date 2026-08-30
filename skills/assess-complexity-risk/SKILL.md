@@ -1,6 +1,6 @@
 ---
 name: assess-complexity-risk
-description: Analyze whether rare failure protections and strong guarantees justify their implementation complexity. Use when evaluating code that handles edge windows, retries, ordering, deduplication, rollover, recovery, or exactly-once-like behavior; when asking what risks could be accepted to simplify a design; or when estimating how much production and test code a proposed simplification would remove.
+description: Analyze whether rare-failure protections justify their complexity. Use whenever the user wants to evaluate complexity vs. risk — triggers include "avaliar complexidade", "vale a pena essa complexidade", "simplificar design", "analyze complexity risk", "retries/ordering/deduplication really needed", "what risks could we accept", or wants to estimate code removed by simplification.
 ---
 
 # Assess Complexity Risk

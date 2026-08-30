@@ -1,6 +1,6 @@
 ---
 name: resolve-review-comments
-description: Shared triage process for reviewer comments on a code change — classify intent, evaluate suggestions, decide whether to apply, apply with a note, or ask. Use when another skill needs to process comments left on a code review, regardless of source (GitHub PR, a Hunk session, etc.).
+description: Shared triage process for reviewer comments — classify intent, evaluate suggestions, decide to apply or ask. Use whenever processing review comments from any source (GitHub PR, Hunk, etc.) — triggers include "triar comentários", "processar feedback", "triage review comments", or when another skill needs to resolve reviewer feedback.
 ---
 
 # Resolve Review Comments

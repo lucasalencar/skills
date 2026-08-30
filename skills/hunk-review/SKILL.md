@@ -1,6 +1,6 @@
 ---
 name: hunk-review
-description: Interacts with live Hunk diff review sessions via CLI. Inspects review focus, navigates files and hunks, reloads session contents, and adds inline review comments. Use when the user has a Hunk session running or wants to review diffs interactively.
+description: Interact with live Hunk diff review sessions via CLI. Use whenever the user wants to review diffs interactively in Hunk — triggers include "revisar com hunk", "abrir hunk", "review with hunk", "hunk review", "ver diff no hunk", "navegar hunks", or wants to inspect/add comments in a live Hunk session.
 ---
 
 # Hunk Review

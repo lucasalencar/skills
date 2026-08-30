@@ -1,6 +1,6 @@
 ---
 name: ask-pr-review
-description: Request a Pull Request review. Runs a fixed baseline (improve description, mark ready) then executes team-specific custom steps from memory. Learns each team's workflow on first use and supports multiple repos per team.
+description: Request a review for a Pull Request. Use whenever the user wants to ask for review — triggers include "pedir review", "solicitar review", "pedir revisão", "solicitar revisão", "marca como pronto", "mark as ready", "pedir para revisarem meu PR", "ask for review", "request review". Runs baseline (improve description, mark ready) then team-specific custom steps.
 ---
 
 # Requirements

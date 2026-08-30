@@ -1,6 +1,6 @@
 ---
 name: debug-local-servers
-description: Investigate what's happening with local dev servers running in tmux panes by pulling their stdout logs. Use when the user is debugging a local setup where multiple servers run in a tmux window/session and wants help understanding an error, unexpected behavior, or test failure from their logs.
+description: Debug local dev servers running in tmux panes by pulling their stdout logs. Use whenever the user reports a local failure — triggers include "debugar servidor local", "ver logs do tmux", "servidor quebrou local", "debug local servers", "ver painel do servidor", "erro no ambiente local", "local dev server error", or wants help understanding errors from tmux panes.
 ---
 
 # Debug Local Servers

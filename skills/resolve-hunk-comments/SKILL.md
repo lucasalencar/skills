@@ -1,6 +1,6 @@
 ---
 name: resolve-hunk-comments
-description: Fetch the review comments the user left in a live Hunk session and address them in the current code. Use when the user asks to resolve, address, or act on comments they added while reviewing a diff in Hunk (e.g. "resolve my hunk comments", "endereça os comentários que eu fiz no hunk").
+description: Resolve review comments left in a live Hunk session. Use whenever the user wants to address Hunk feedback — triggers include "resolver comentários do hunk", "endereça os comentários do hunk", "resolve hunk comments", "aplicar comentários do hunk", "corrigir o que comentei no hunk".
 ---
 
 ## Steps

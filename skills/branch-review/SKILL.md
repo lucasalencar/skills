@@ -1,6 +1,6 @@
 ---
 name: branch-review
-description: Reviews a branch or a coherent set of recent commits by running a change review across multiple dimensions plus impact analysis, each in parallel subagents. Use when asked to review a branch, review recent work committed directly to the base branch, do a full review before merge, or check what a change set might break.
+description: Review a branch, PR, or recent commits across multiple dimensions (correctness, security, performance, etc.) plus impact analysis in parallel subagents. Use whenever the user wants a code review — triggers include "revisar branch", "revisar PR", "review branch", "review PR", "revisar código", "revisar mudanças", "code review", "revisa meu PR", "check what this change might break", or wants a full review before merge.
 ---
 
 Resolve one review range before dispatching subagents:

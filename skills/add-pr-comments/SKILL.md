@@ -1,6 +1,6 @@
 ---
 name: add-pr-comments
-description: Add line-specific review comments on a GitHub Pull Request. Use when the user says "adiciona comentários no PR" or "add comments to the PR" referring to specific review points previously identified.
+description: Add line-specific review comments on a GitHub Pull Request. Use whenever the user wants to post review comments on a PR — triggers include "adiciona comentários no PR", "comentar no PR", "add comments to the PR", "post review comments", "adicionar review no PR", referring to specific findings previously identified.
 ---
 
 ## Steps

@@ -1,6 +1,6 @@
 ---
 name: open-pr
-description: Create a new pull request based on the changes made in the current branch.
+description: Create a new pull request from the current branch. Use whenever the user wants to open a PR — triggers include "abrir PR", "criar PR", "abrir pull request", "criar pull request", "abre um PR", "faz o PR", "open PR", "open pull request", "create PR", "subir PR", or wants to push the branch and open it for review.
 ---
 
 ## Steps

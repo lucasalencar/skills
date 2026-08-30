@@ -1,6 +1,6 @@
 ---
 name: resolve-pr-comments
-description: Fetch Pull Request comments and resolve them according to the suggestions.
+description: Fetch and resolve Pull Request review comments. Use whenever the user wants to address PR feedback — triggers include "resolver comentários do PR", "endereçar comentários", "resolver feedback do PR", "resolve PR comments", "address review comments", "corrigir o que foi comentado no PR", or wants to apply suggestions from a code review.
 ---
 
 ## Steps

@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Use this skill whenever you are about to commit changes for the user — ALWAYS load it before running `git commit`, whether the user explicitly asked for a commit or it's a step within a larger task. Covers branch checks, splitting into atomic commits, and push confirmation.
+description: Commit changes with proper branch checks and atomic commits. Use whenever the user wants to commit — triggers include "commit", "commitar", "comitar", "fazer commit", "criar commit", "comita", "salvar alterações", "git commit", "fazer o commit e push", or any step that requires staging and committing before pushing or opening a PR. ALWAYS load before running git commit, even as part of a larger task. Covers branch checks, splitting into atomic commits, and push confirmation.
 ---
 
 ## Steps

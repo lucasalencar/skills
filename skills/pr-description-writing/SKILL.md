@@ -1,6 +1,6 @@
 ---
 name: pr-description-writing
-description: Draft or improve a Pull Request description that introduces a code change through its problem, importance, concise solution summary, and decision rationale. Use when writing, revising, or reviewing a PR description for clarity, concision, and context beyond the diff.
+description: Draft or improve a Pull Request description with problem/solution/rationale. Use whenever the user wants to write or improve a PR description — triggers include "escrever descrição do PR", "melhorar descrição do PR", "PR description", "descrição do pull request", "texto do PR", or wants help refining the PR body for reviewers.
 ---
 
 # Pull Request description writing

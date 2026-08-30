@@ -1,6 +1,6 @@
 ---
 name: work-checkout-message
-description: Generate a daily or weekly "checkout" message listing the user's own open pull requests, grouped into high-priority (team-priority, needs review) and low-priority (nice-to-have review) sections, with PRs ordered inside each section by review dependency (stacked PRs, "depends on"/"blocked by" references go after what they depend on). Produces a Slack-ready plain-text message. Use this whenever the user asks to post a checkout, standup, or "PRs to review" message, wants a summary of their open PRs to share with the team, or mentions organizing their PRs by priority/review order.
+description: Generate a daily/weekly checkout message listing the user's open PRs grouped by priority and dependency order. Use whenever the user wants a checkout/standup summary — triggers include "mensagem de checkout", "checkout message", "standup message", "PRs para review", "resumo dos PRs", "mensagem de PRs abertos", "checkout do dia/semana".
 ---
 
 # Checkout message
