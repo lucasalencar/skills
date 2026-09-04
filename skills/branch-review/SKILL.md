@@ -12,7 +12,7 @@ Resolve one review range before dispatching subagents:
 
 Before dispatching, send a progress update with the selected range and a one-sentence rationale. If the history does not support a defensible boundary, ask the user for the starting commit instead of choosing an arbitrary count.
 
-Every subagent receives the resolved range and fetches the diff itself. When a PR exists, it also fetches its description and comments in its own session.
+Every subagent receives the resolved range and fetches the diff itself. When a PR exists, it first fetches the PR title and description in its own session. Treat documented decisions, constraints, trade-offs, and accepted risks there as review context. Before reporting a finding, check whether the description already addresses it. Report it only when the implementation conflicts with that context, its documented rationale no longer holds, or the finding has a concrete impact the description did not cover.
 
 On every invocation, reread this skill and reconstruct every prompt from it and the current reference files. Call each applicable item once in its own subagent. Build all prompts, then dispatch every subagent from both sections in one parallel batch.
 
