@@ -14,13 +14,14 @@ Before dispatching, send a progress update with the selected range and a one-sen
 
 Every subagent receives the resolved range and fetches the diff itself. When a PR exists, it first fetches the PR title and description in its own session. Treat documented decisions, constraints, trade-offs, and accepted risks there as review context. Before reporting a finding, check whether the description already addresses it. Report it only when the implementation conflicts with that context, its documented rationale no longer holds, or the finding has a concrete impact the description did not cover.
 
-On every invocation, reread this skill and reconstruct every prompt from it and the current reference files. Call each applicable item once in its own subagent. Build all prompts, then dispatch every subagent from both sections in one parallel batch.
+On every invocation, reread this skill and reconstruct every prompt from it and the current reference files. Review iterations are independent: never read, use, summarize, or pass the contents of prior `.reviews/` reports to subagents or into the current synthesis. Treat prior reports as archival output only; base the current review exclusively on the resolved range, current repository state, PR context, and the current skill/reference files. Call each applicable item once in its own subagent. Build all prompts, then dispatch every subagent from both sections in one parallel batch.
 
 ## Subagent output contract
 
 Include this contract in every subagent prompt, after any skill-specific or dimension-specific instructions:
 
 - Do not modify code.
+- Exclude `.reviews/` from every repository file search (for example, `rg --glob '!.reviews/**'`); never inspect files there.
 - Report only actionable findings supported by the reviewed code. For each finding, cite the relevant `path:line`; for a cross-cutting finding without a single location, cite all relevant locations.
 - Give a concise explanation and at least one concrete, non-speculative impact for each finding.
 - Use the same language as the conversation.
