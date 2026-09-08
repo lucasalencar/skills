@@ -31,3 +31,14 @@ description: Create a new pull request from the current branch. Use whenever the
   - **Rationale**: trade-offs and decisions a reviewer would otherwise ask about (flag gating, scope choices, why X over Y).
 - Skip filler that adds no signal (e.g. "lint clean", "tests green", "no public API changes"). Only call these out when they're surprising.
 - Prefer linking to tickets/threads for deep context instead of restating it inline.
+
+## Optional visual explanation
+
+Before finalizing the description, assess whether a small visual would give reviewers a clearer mental model of the change than a short paragraph alone. Add one when the change spans several interacting components, crosses a non-obvious information or control-flow boundary, introduces meaningful ordering or lifecycle behavior, or otherwise has relationships that are hard to follow from the diff.
+
+Choose the smallest diagram that explains the reviewer-relevant idea:
+
+- Use a sequence diagram for interactions, ordering, or request/event flow across components.
+- Use a component or flow diagram with labeled boxes and arrows for data movement, ownership, or changed boundaries.
+
+Keep the visual focused on the changed behavior, with only the actors and paths needed to understand it. Place it in the PR description where the repository template permits, using a format GitHub can render (such as Mermaid) when suitable. Omit it when the change is local, linear, or already clearer as concise prose; a diagram is optional, not a standard section for every PR.
