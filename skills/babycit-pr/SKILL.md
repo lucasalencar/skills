@@ -1,16 +1,21 @@
 ---
-name: babysit-ci
-description: Monitor a Pull Request's CI checks and incoming review comments until CI is green and feedback is addressed, investigating failures and fixing or re-running as needed. Use whenever the user wants a PR babysat — triggers include "babysit ci", "babysit do CI", "babysit do PR", "cuida do CI", "olha o CI", "watch the CI", "CI is failing", "CI tá falhando", "verifica o CI do PR", "monitora os comentários do PR", "endereça os comentários que chegarem", or wants failing checks diagnosed and fixed and new review comments addressed as they arrive.
+name: babycit-pr
+description: Continuously monitor a Pull Request's CI, review activity, and divergence from its base branch; fix actionable failures and feedback, and safely rebase a clean branch. Use when the user wants a PR babysat or continuously polled, including "babysit PR", "babysit do PR", "BabyCit PR", "watch the PR", "monitor PR", "monitorar PR", or wants CI, comments, and branch freshness watched together.
 ---
 
 ## Objective
 
-Take ownership of a given PR until it is merge-ready: poll check status,
-diagnose failures from logs, and watch for new review comments — fixing code
-issues, re-running flakes or infra failures, addressing reviewer feedback,
-and pushing updates — reporting clearly at each step. Stop with a summary
-when CI is green and all comments are addressed, or when blocked on something
-that needs a human decision.
+Run a persistent PR watch for the requested duration (12 hours by default;
+allow up to 24 hours when requested). Keep the PR head branch healthy:
+required CI must pass on its current head SHA, all actionable discussion and
+review activity must be handled, and the branch must be brought current with
+`main` whenever that can be rebased cleanly. A push, re-run, or
+successful rebase starts a new evaluation of the resulting head SHA.
+
+Use `scripts/poll_pr.py` for low-overhead remote polling. It emits JSON Lines
+only for the initial snapshot and material state changes; leave it running in
+a persistent terminal session and react when it prints an event. It requires
+the authenticated GitHub CLI (`gh`) and is intentionally read-only.
 
 ## Progress reporting
 
@@ -40,32 +45,41 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      and say so instead of guessing.
    - Record the PR head branch and sha being watched; if the sha changes
      mid-watch (new push), restart evaluation against the new sha.
+   - Verify that the PR targets `main`. If it targets another branch, report
+     that fact and ask whether that branch should replace `main` as the
+     update source; do not silently rebase onto a different target.
 
-2. **Establish the baseline.**
+2. **Establish the baseline and start the watcher.**
    - Detect which CI system the PR uses (e.g. `gh pr checks`, `gh run list`,
      or the forge's check API for the PR head sha). Do not assume a specific
      provider — use whatever CLI/API the repository already uses.
    - List all required checks and their current state
      (pending / passing / failing). Report the baseline briefly before
      entering the loop.
-   - Snapshot already-seen review comments (ids/timestamps) so the loop only
-     reacts to newly arriving ones. Report the count of pre-existing
-     unresolved comments without addressing them yet unless the user asked
-     for that too.
+   - Snapshot every existing issue comment, review submission, and inline
+     review comment. Treat unaddressed actionable feedback already on the PR
+     as work, then mark handled item IDs so unchanged items are not revisited.
+   - Start `python3 scripts/poll_pr.py <PR> --duration 12h --interval 120` in a
+     persistent terminal session. Use a shorter interval only when it is
+     useful, and pass a user-requested duration up to 24 hours. The script is
+     an event source, not a replacement for diagnosis: inspect changed data
+     with `gh` when it emits an event.
 
 3. **Enter the watch loop.**
-   - Poll check status and new review comments at a sensible interval (a few
-     minutes for remote CI; shorter only for fast local-equivalent suites).
+   - React to each watcher event by polling the authoritative forge data.
+     If the helper is unavailable, poll at a sensible interval (a few minutes
+     for remote CI; shorter only for fast local-equivalent suites).
      Per Progress reporting above: stay quiet only when nothing changed;
      every transition or new comment gets an immediate update.
    - On each poll with news, report: which checks flipped state since the
      last poll, the current tally (e.g. "3 passing, 1 pending, 1 failing"),
      and any new comments since the last poll (author + what was asked).
-   - Keep watching while any required check is pending/queued or new comments
-     keep arriving. Move to step 4 as soon as a required check fails, and to
-     step 5 as soon as a new comment arrives. Handle one event at a time,
-     then re-poll before acting on the next — a fresh push may resolve both
-     a failure and a comment thread.
+   - Keep watching for the whole requested duration, even when CI is green
+     and no feedback is currently open. Move to step 4 as soon as a required
+     check fails, step 5 as soon as actionable feedback appears, and step 6
+     when the PR falls behind its base branch. Handle one event at a time,
+     then re-poll before acting on the next — a fresh push may resolve several
+     events.
 
 4. **Diagnose each failure.**
    - Fetch the failure logs for the failed check/run only (full log for
@@ -87,8 +101,9 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      before acting, as part of the "what changed / what you will do" update —
      never push or re-run before announcing it.
 
-5. **Address each new comment.**
-   - For every comment that arrived since the last poll, run the
+5. **Address each actionable comment.**
+   - For every actionable item found in the baseline or since the last poll,
+     run the
      `resolve-pr-comments` triage process (which itself follows
      `resolve-review-comments` and `pr-comment-writing`): read the code at
      the comment's location, classify intent (question / suggestion / mixed),
@@ -107,7 +122,23 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      them; treat replies from the PR owner as new events only if they request
      further changes.
 
-6. **Act on the failure classification.**
+6. **Update a stale branch safely.**
+   - When the PR is behind `main`, fetch `main` and confirm
+     the working tree is clean. Check whether applying the PR commits onto
+     that fetched `main` has a conflict before changing history (for example,
+     use `git merge-tree --write-tree HEAD <remote>/main` as a preflight).
+   - Only when that preflight is clean, announce the exact base SHA, rebase
+     onto it, verify the resulting branch, and push with `--force-with-lease`.
+     Re-check that the remote head is still the SHA evaluated before rebasing;
+     if it changed, abandon the attempt and return to the watch loop.
+   - If the preflight reports conflicts, leave the branch untouched, report
+     the conflicting paths and that a human rebase is required, then continue
+     observing CI and comments. Do not start a rebase that is expected to
+     conflict, and never resolve conflicts automatically.
+   - A clean rebase creates a new PR SHA: return to step 3 and wait for CI on
+     that SHA before considering the branch healthy.
+
+7. **Act on the failure classification.**
    - **Flake / infra**: re-run only the failed jobs/checks (never the full
      matrix unless the provider lacks per-job rerun), then return to step 3.
      Cap blind re-runs at 2 per check — a third identical failure is treated
@@ -120,22 +151,23 @@ The user is waiting on this watch — never act silently. Narrate the loop:
    - **Broken base / external** or **needs human decision**: stop the loop
      and report — do not push speculative fixes outside the PR's scope.
 
-7. **Respect loop safeguards.**
-   - Stop after 5 fix-and-push rounds (CI fixes and comment fixes combined)
-     or 60 minutes of watching, whichever comes first, and report the current
-     state plus what remains.
+8. **Respect loop safeguards.**
+   - Stop at the requested time limit (12 hours by default, never more than
+     24 hours). There is no fixed cap on genuine fix rounds; instead, stop
+     and ask for direction when repeated attempts cannot produce new evidence
+     or a fix would require a human decision.
    - Never push when the working tree has unrelated uncommitted changes —
      ask the user how to proceed instead.
-   - Never rebase, retarget, merge, or close the PR unless the user
-     explicitly asked for it. Polling and re-running checks never require
-     touching the branch.
+   - Never retarget, merge, or close the PR. Rebase only when the invoking
+     request authorizes the clean-rebase workflow described in step 6.
 
 ## Output
 
-- When CI goes green and all arrived comments are addressed: confirm all
-  required checks pass on the final sha, list comments addressed (applied /
-  replied / declined with reasoning) and fixes pushed, and link the PR.
-- When blocked or capped out: report per-check status, the failing step and
+- At the time limit: confirm the final PR SHA and base SHA, per-check status,
+  whether the branch is current, comments addressed (applied / replied /
+  declined with reasoning), and every fix, re-run, or rebase pushed. Link the
+  PR and state whether it is currently merge-ready.
+- When blocked: report per-check status, the failing step and
   key log lines for each red check, unaddressed comments and what they need,
   what was already tried (re-runs, fixes pushed), and the specific decision
   or action needed from the user.
