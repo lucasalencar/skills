@@ -32,7 +32,11 @@ Investigate the dimensions the diff actually raises. Useful signals include:
 
 For each selected item, verify the claim from the change and surrounding code. Explain why it matters in the language of the system, link to the relevant changed location, and pose a concrete review question. Surface uncertainty honestly: a question is valuable when it directs the reviewer to a decision only they can make.
 
-When reviewing an open PR, include a clickable link for every selected location. Prefer the code-hosting provider's PR diff URL anchored to the changed line or range. If that anchor cannot be established reliably, link to the file at the PR head commit and include the line number in the link. If neither URL is available, retain the `path:line` reference; never invent a URL or line anchor. Link the narrowest changed location that provides enough context for the reviewer to understand the decision.
+When reviewing an open PR, include a clickable link for every selected location in that PR's **Files changed** view. Never substitute a branch or head-commit file link while a PR URL is available.
+
+For GitHub, construct the location link from the PR URL: `PR_URL/files#diff-<SHA-256 of the PR-relative path>R<new-line>`. Use `L<old-line>` for a removed line. For a changed file without an anchorable line, omit the `R` or `L` suffix but retain the file's `#diff-...` anchor. Derive the hash from the file path shown by the PR diff, using the post-change path for additions or modifications and the pre-change path for deletions. This keeps the reviewer in the PR diff even when the branch later moves.
+
+For another provider, use its closest reliable link to the PR's file diff and line. When no provider-specific file anchor can be established, link to the PR's Files changed page and retain the `path:line` beside it. Never invent a URL or line anchor. Link the narrowest changed location that provides enough context for the reviewer to understand the decision.
 
 Use tests as evidence of the behavior the author intended to preserve or introduce. Call out a test only when its cases reveal a business decision, leave a meaningful path unproven, or encode an assumption the reviewer should validate.
 
@@ -45,7 +49,7 @@ For every item include:
 ```markdown
 ### 1. Highest priority — concise decision or change
 
-**Inspect:** [`path/to/file:line`](https://host.example/pull/123/files#changed-line) and the relevant symbol or flow.
+**Inspect:** [`path/to/file:line`](https://github.com/owner/repo/pull/123/files#diff-<sha256-path>R42) and the relevant symbol or flow.
 
 **Why this deserves attention:** The concrete behavior, invariant, or trade-off at stake.
 
