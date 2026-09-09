@@ -97,7 +97,7 @@ def emit(kind: str, state: dict[str, object], changed: dict[str, object] | None 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("pr", help="PR number or URL accepted by gh pr view")
-    parser.add_argument("--duration", type=duration, default=timedelta(hours=12).total_seconds())
+    parser.add_argument("--duration", type=duration, default=timedelta(hours=6).total_seconds())
     parser.add_argument("--interval", type=float, default=120, help="seconds between polls")
     args = parser.parse_args()
     if args.interval <= 0:

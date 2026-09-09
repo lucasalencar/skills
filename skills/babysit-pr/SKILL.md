@@ -5,7 +5,7 @@ description: Continuously monitor a Pull Request's CI, review activity, and dive
 
 ## Objective
 
-Run a persistent PR watch for the requested duration (12 hours by default;
+Run a persistent PR watch for the requested duration (6 hours by default;
 allow up to 24 hours when requested). Keep the PR head branch healthy:
 required CI must pass on its current head SHA, all actionable discussion and
 review activity must be handled, and the branch must be brought current with
@@ -59,7 +59,7 @@ The user is waiting on this watch — never act silently. Narrate the loop:
    - Snapshot every existing issue comment, review submission, and inline
      review comment. Treat unaddressed actionable feedback already on the PR
      as work, then mark handled item IDs so unchanged items are not revisited.
-   - Start `python3 scripts/poll_pr.py <PR> --duration 12h --interval 120` in a
+   - Start `python3 scripts/poll_pr.py <PR> --duration 6h --interval 120` in a
      persistent terminal session. Use a shorter interval only when it is
      useful, and pass a user-requested duration up to 24 hours. The script is
      an event source, not a replacement for diagnosis: inspect changed data
@@ -148,14 +148,20 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      (single test, lint on touched files), then commit and push following the
      `commit` skill, reporting what was fixed and the new sha. Return to
      step 3 against the new sha.
-   - **Broken base / external** or **needs human decision**: stop the loop
-     and report — do not push speculative fixes outside the PR's scope.
+   - **Broken base / external** or **needs human decision**: report the
+     blocker and do not push speculative fixes outside the PR's scope, but
+     continue watching. A later push, CI transition, or comment may change
+     the situation or provide the needed direction.
 
 8. **Respect loop safeguards.**
-   - Stop at the requested time limit (12 hours by default, never more than
-     24 hours). There is no fixed cap on genuine fix rounds; instead, stop
-     and ask for direction when repeated attempts cannot produce new evidence
-     or a fix would require a human decision.
+   - End the watch only when the requested time limit expires (6 hours by
+     default, never more than 24 hours) or when the user explicitly asks to
+     stop. Do not treat a green, merge-ready PR as a completion condition:
+     keep polling because later pushes, CI regressions, and review activity
+     remain in scope for the entire watch.
+   - There is no fixed cap on genuine fix rounds. When repeated attempts
+     cannot produce new evidence or a fix requires a human decision, report
+     the blocker and wait for direction while continuing to observe the PR.
    - Never push when the working tree has unrelated uncommitted changes —
      ask the user how to proceed instead.
    - Never retarget, merge, or close the PR. Rebase only when the invoking
@@ -167,7 +173,8 @@ The user is waiting on this watch — never act silently. Narrate the loop:
   whether the branch is current, comments addressed (applied / replied /
   declined with reasoning), and every fix, re-run, or rebase pushed. Link the
   PR and state whether it is currently merge-ready.
-- When blocked: report per-check status, the failing step and
-  key log lines for each red check, unaddressed comments and what they need,
-  what was already tried (re-runs, fixes pushed), and the specific decision
-  or action needed from the user.
+- When blocked: report per-check status, the failing step and key log lines
+  for each red check, unaddressed comments and what they need, what was
+  already tried (re-runs, fixes pushed), and the specific decision or action
+  needed from the user. Keep the watch active unless its time limit expires
+  or the user explicitly stops it.
