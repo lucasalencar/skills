@@ -1,5 +1,5 @@
 ---
-name: babycit-pr
+name: babysit-pr
 description: Continuously monitor a Pull Request's CI, review activity, and divergence from its base branch; fix actionable failures and feedback, and safely rebase a clean branch. Use when the user wants a PR babysat or continuously polled, including "babysit PR", "babysit do PR", "BabyCit PR", "watch the PR", "monitor PR", "monitorar PR", or wants CI, comments, and branch freshness watched together.
 ---
 
