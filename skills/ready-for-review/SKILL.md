@@ -1,7 +1,9 @@
 ---
-name: ask-pr-review
-description: Request a review for a Pull Request. Use whenever the user wants to ask for review — triggers include "pedir review", "solicitar review", "pedir revisão", "solicitar revisão", "marca como pronto", "mark as ready", "pedir para revisarem meu PR", "ask for review", "request review". Runs baseline (improve description, mark ready) then team-specific custom steps.
+name: ready-for-review
+description: Prepare a Pull Request to be ready for review. Use whenever the user wants to announce a PR is ready for another person to review — triggers include "pedir review", "solicitar review", "pedir revisão", "solicitar revisão", "marca como pronto", "mark as ready", "pedir para revisarem meu PR", "ask for review", "request review". Runs baseline (improve description, mark ready) then team-specific custom steps.
 ---
+
+# Ready for Review
 
 # Requirements
 
@@ -75,7 +77,7 @@ Show the rewritten steps to the user and ask for confirmation before saving: "He
 Save to `~/.claude/pr-review-preferences.md`, preserving existing teams. Use this format:
 
 ~~~markdown
-# PR Review Preferences
+# Ready for Review Preferences
 
 ```yaml
 teams:

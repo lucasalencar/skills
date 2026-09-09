@@ -57,7 +57,7 @@ skills/
 | Skill | Description |
 |-------|-------------|
 | [add-pr-comments](skills/add-pr-comments/SKILL.md) | Add line-specific review comments to a GitHub Pull Request. |
-| [ask-pr-review](skills/ask-pr-review/SKILL.md) | Request a Pull Request review. Runs a fixed baseline (improve description, mark ready) then executes team-specific custom steps. Learns each team's workflow on first use. |
+| [ready-for-review](skills/ready-for-review/SKILL.md) | Prepare a Pull Request to be ready for review. Runs a fixed baseline (improve description, mark ready) then executes team-specific custom steps. Learns each team's workflow on first use. |
 | [assess-change-impact](skills/assess-change-impact/SKILL.md) | Analyze a code change for non-obvious ripple effects across the system. Use before merge to surface semantic shifts, symmetric code paths, and latent bugs hidden behind a seemingly local change. |
 | [branch-review](skills/branch-review/SKILL.md) | Review branch changes across multiple dimensions and analyze their impact. |
 | [branch-review-loop](skills/branch-review-loop/SKILL.md) | Iteratively review and improve branch changes until no actionable findings remain. |
