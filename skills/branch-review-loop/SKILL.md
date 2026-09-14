@@ -20,6 +20,10 @@ Run `branch-review` repeatedly, applying only justified in-scope fixes after eac
    - Go back to step 1.
 4. If there are no in-scope findings (either no findings at all, or all findings are follow-ups or out-of-scope):
    - Stop the loop.
+5. After the loop ends and all review interactions and connections are closed:
+   - Consolidate every unimplemented follow-up and out-of-scope finding into an actionable list of independent issue candidates.
+   - For each candidate, include a concise suggested title, the triggering finding, and why it was left outside this branch.
+   - Recommend that the user record each candidate as a separate issue in the project's issue tracker (or equivalent), rather than bundling unrelated work. Do not create or submit issues unless the user explicitly requests it.
 
 ## Safeguard
 
@@ -31,4 +35,5 @@ After the loop ends, present:
 - A summary of all fixes applied, grouped by iteration.
 - Follow-ups not implemented, especially premature performance or concurrency optimizations, with the triggering comment and the evidence needed before reconsidering them.
 - Any out-of-scope findings identified but not addressed, with a brief explanation of why they fall outside the branch scope.
+- A dedicated list of follow-up and out-of-scope issue candidates, one per potential issue, with suggested titles and a recommendation to register each separately in the issue tracker.
 - A short list of pending decisions that require the user's attention — trade-offs, ambiguous scope calls, or findings that could go either way.
