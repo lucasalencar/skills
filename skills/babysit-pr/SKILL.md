@@ -12,6 +12,14 @@ review activity must be handled, and the branch must be brought current with
 `main` whenever that can be rebased cleanly. A push, re-run, or
 successful rebase starts a new evaluation of the resulting head SHA.
 
+This watch is an auto-push workflow for changes it creates. After every fix
+commit or clean rebase, push automatically as part of that action; do not
+pause to ask whether to push. Use the `commit` skill for commit boundaries and
+validation, with this rule supplying its push preference. Each successful push
+starts a fresh cycle: wait for CI to run against the new SHA and for any
+configured automated reviewer to review that push, then handle their results
+as new watch events.
+
 Use `scripts/poll_pr.py` for low-overhead remote polling. It emits JSON Lines
 only for the initial snapshot and material state changes; leave it running in
 a persistent terminal session and react when it prints an event. It requires
@@ -113,8 +121,9 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      reasoning when declining), and apply justified code changes directly.
      Announce each comment's verdict (apply / reply / decline + why) before
      acting. Batch all comment-driven fixes from the same poll into a single
-     commit and push following the `commit` skill, reporting the sha pushed,
-     then return to step 3 against the new sha.
+     commit and push automatically following the `commit` skill, reporting the
+     sha pushed, then return to step 3 against the new sha and wait for its
+     fresh CI and automated-review cycle.
    - Scope-expanding suggestions and ambiguous feedback pause the loop:
      surface what the reviewer asked, why it grows the branch scope or needs
      judgment, and wait for the user's decision instead of pushing a guess.
@@ -145,9 +154,10 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      as a real failure, not a flake.
    - **Code issue in this PR**: announce the fix plan first, then fix the
      code directly, verify with the narrowest local reproduction available
-     (single test, lint on touched files), then commit and push following the
-     `commit` skill, reporting what was fixed and the new sha. Return to
-     step 3 against the new sha.
+     (single test, lint on touched files), then commit and push automatically
+     following the `commit` skill, reporting what was fixed and the new sha.
+     Return to step 3 against the new sha and wait for its fresh CI and
+     automated-review cycle.
    - **Broken base / external** or **needs human decision**: report the
      blocker and do not push speculative fixes outside the PR's scope, but
      continue watching. A later push, CI transition, or comment may change
