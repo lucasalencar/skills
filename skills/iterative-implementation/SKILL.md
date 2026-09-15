@@ -7,6 +7,20 @@ description: Coordinate Jira tasks as small, dependency-ordered implementation i
 
 Treat the task map as a dependency graph. Coordinate the work; never implement a task in the coordinator checkout.
 
+## Planning and dependency discovery
+
+When this skill runs inside an orchestration session and the user requests a plan, implementation plan, dependency map, dependency tree, or current task state, delegate the entire discovery pass to one planning subagent. That subagent owns the complete plan-building pass: querying the issue tracker and GitHub, gathering the state of every relevant task and PR, validating dependencies, and returning the normalized task graph and ready set.
+
+The planning subagent may issue independent queries concurrently within its own work, but it keeps the work in one assignment and returns one synthesized report. It does not delegate one lookup or task to another subagent, and the coordinator does not fan the discovery pass out across task-specific agents. Use the returned report as the single source for the initial tree, dependency validation, effective/redundant dependency classification, and readiness calculation.
+
+Give the planning subagent this completion criterion:
+
+```text
+Return one complete, deduplicated dependency graph covering every relevant task, with each task's Jira ID, title, scope, acceptance criteria, dependencies, Jira state, branch, PR, merge state, effective/redundant dependency classification, blockers, and readiness. Include the evidence source for each state and identify any unknown or conflicting data.
+```
+
+After the initial planning pass, task implementation remains one dedicated subagent per task. On later status refreshes, reuse the same single planning-subagent pattern whenever a new plan, dependency map, dependency tree, or complete current-state report is requested.
+
 ## Invariants
 
 - Use the Jira ID as each task's primary identifier in prompts, branches, worktrees, and reports. Add a PR number only for navigation.
