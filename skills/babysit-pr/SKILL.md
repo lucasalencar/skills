@@ -1,6 +1,6 @@
 ---
 name: babysit-pr
-description: Continuously monitor an open Pull Request's CI, review activity, and divergence from its base branch; fix actionable failures and feedback, and safely rebase a clean branch. Invoke when opening a PR; when its CI is failing or not green; when it has problems needing attention before it is ready for review; or when the user asks to babysit, watch, or monitor it.
+description: When a Pull Request has just been created or opened, immediately start a persistent watch of its CI, review activity, and divergence from its base branch; also use when its CI is failing or not green, actionable review activity needs attention before review, or the user asks to babysit, watch, or monitor a PR.
 ---
 
 ## Objective
