@@ -65,8 +65,10 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      (pending / passing / failing). Report the baseline briefly before
      entering the loop.
    - Snapshot every existing issue comment, review submission, and inline
-     review comment. Treat unaddressed actionable feedback already on the PR
-     as work, then mark handled item IDs so unchanged items are not revisited.
+     review comment, including items authored by the PR owner. Route existing
+     items that may need an answer or code change through step 5, then mark
+     each handled item and its latest update marker so unchanged items are not
+     revisited.
    - Start `python3 scripts/poll_pr.py <PR> --duration 6h --interval 120` in a
      persistent terminal session. Use a shorter interval only when it is
      useful, and pass a user-requested duration up to 24 hours. The script is
@@ -81,13 +83,18 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      every transition or new comment gets an immediate update.
    - On each poll with news, report: which checks flipped state since the
      last poll, the current tally (e.g. "3 passing, 1 pending, 1 failing"),
-     and any new comments since the last poll (author + what was asked).
+     and every new or updated comment/review since the last poll (source,
+     author, location when applicable, and what was asked).
+   - Treat any `issue_comments`, `review_comments`, or `reviews` field in a
+     `changed` event from `poll_pr.py` as a comment event. Route every item in
+     those fields to step 5 immediately, regardless of author, comment type,
+     or whether CI also changed; let the triage process decide whether it
+     needs a reply, code change, or only a seen marker.
    - Keep watching for the whole requested duration, even when CI is green
      and no feedback is currently open. Move to step 4 as soon as a required
-     check fails, step 5 as soon as actionable feedback appears, and step 6
-     when the PR falls behind its base branch. Handle one event at a time,
-     then re-poll before acting on the next — a fresh push may resolve several
-     events.
+     check fails and step 6 when the PR falls behind its base branch. Handle
+     one event at a time, then re-poll before acting on the next — a fresh
+     push may resolve several events.
 
 4. **Diagnose each failure.**
    - Fetch the failure logs for the failed check/run only (full log for
@@ -109,14 +116,16 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      before acting, as part of the "what changed / what you will do" update —
      never push or re-run before announcing it.
 
-5. **Address each actionable comment.**
-   - For every actionable item found in the baseline or since the last poll,
-     run the
-     `resolve-pr-comments` triage process (which itself follows
-     `resolve-review-comments` and `pr-comment-writing`): read the code at
-     the comment's location, classify intent (question / suggestion / mixed),
-     and evaluate suggestions technically before acting — never apply on the
-     reviewer's word alone.
+5. **Address each comment event.**
+   - For every existing, new, or updated issue comment, review submission, or
+     inline review comment, run the `resolve-pr-comments` process (which
+     itself follows `resolve-review-comments` and `pr-comment-writing`). This
+     includes top-level comments, inline comments, replies, edits, and
+     comments authored by the PR owner. Read the code at the comment's
+     location, classify intent (question / suggestion / mixed), and evaluate
+     suggestions technically before acting. A PR-owner comment that asks for
+     a fix, an answer, or comment resolution is user direction and must be
+     handled by this process.
    - Reply where that process says to reply (answers to questions,
      reasoning when declining), and apply justified code changes directly.
      Announce each comment's verdict (apply / reply / decline + why) before
@@ -127,9 +136,10 @@ The user is waiting on this watch — never act silently. Narrate the loop:
    - Scope-expanding suggestions and ambiguous feedback pause the loop:
      surface what the reviewer asked, why it grows the branch scope or needs
      judgment, and wait for the user's decision instead of pushing a guess.
-     Mark already-triaged comment ids as seen so re-polls do not reprocess
-     them; treat replies from the PR owner as new events only if they request
-     further changes.
+     Mark each triaged item as seen by source, item ID, and latest update
+     marker so unchanged items are not reprocessed. Treat every later reply
+     or edit as a new event, regardless of author. After posting a reply or
+     making a change, mark the resulting item as seen before polling again.
 
 6. **Update a stale branch safely.**
    - When the PR is behind `main`, fetch `main` and confirm
