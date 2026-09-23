@@ -9,7 +9,7 @@ Run `branch-review` repeatedly, applying only justified in-scope fixes after eac
 
 ## Steps
 
-1. Run the `branch-review` skill in full — every iteration of this loop, including the second, third, and beyond, must invoke all of the subagent skills that `branch-review` specifies. Do not shortcut later iterations to a single subagent or a subset; each pass through step 1 is a brand-new, complete `branch-review` run.
+1. Run the `branch-review` skill in full — every iteration of this loop, including the second and third, must invoke all of the subagent skills that `branch-review` specifies. Do not shortcut later iterations to a single subagent or a subset; each pass through step 1 is a brand-new, complete `branch-review` run.
 2. Classify each finding as **in-scope**, **follow-up**, or **out-of-scope**:
    - **In-scope**: can be fixed within the current branch without expanding its purpose and improves correctness, clarity, maintainability, or a demonstrated requirement.
    - **Follow-up**: proposes premature performance or concurrency optimization, extra defensive code for speculative or rare scenarios, or complexity whose benefit is not demonstrated by the branch's requirements, production evidence, profiling, or a reproducible issue. Do not implement it in this loop; record it for later consideration.
@@ -27,7 +27,7 @@ Run `branch-review` repeatedly, applying only justified in-scope fixes after eac
 
 ## Safeguard
 
-Stop after 5 iterations regardless of findings to avoid infinite loops. Report any remaining in-scope findings as unresolved.
+Stop after 3 iterations regardless of findings to avoid infinite loops. Report any remaining in-scope findings as unresolved.
 
 ## Output
 
