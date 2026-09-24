@@ -69,8 +69,10 @@ The user is waiting on this watch — never act silently. Narrate the loop:
      items that may need an answer or code change through step 5, then mark
      each handled item and its latest update marker so unchanged items are not
      revisited.
-   - Start `python3 scripts/poll_pr.py <PR> --duration 6h --interval 120` in a
-     persistent terminal session. Use a shorter interval only when it is
+   - Start `python3 scripts/poll_pr.py <PR> --duration 6h` in a persistent
+     terminal session. By default, it polls every 5 minutes during the first
+     hour, then every 20 minutes for the rest of the watch. Override
+     `--initial-interval` or `--interval` only when a different cadence is
      useful, and pass a user-requested duration up to 24 hours. The script is
      an event source, not a replacement for diagnosis: inspect changed data
      with `gh` when it emits an event.

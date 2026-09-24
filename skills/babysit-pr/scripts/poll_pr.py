@@ -14,6 +14,8 @@ import sys
 import time
 from datetime import timedelta
 
+FIRST_HOUR_SECONDS = timedelta(hours=1).total_seconds()
+
 
 def duration(value: str) -> float:
     units = {"s": 1, "m": 60, "h": 3600}
@@ -98,12 +100,26 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("pr", help="PR number or URL accepted by gh pr view")
     parser.add_argument("--duration", type=duration, default=timedelta(hours=6).total_seconds())
-    parser.add_argument("--interval", type=float, default=120, help="seconds between polls")
+    parser.add_argument(
+        "--initial-interval",
+        type=float,
+        default=300,
+        help="seconds between polls during the first hour (default: 300)",
+    )
+    parser.add_argument(
+        "--interval",
+        type=float,
+        default=1200,
+        help="seconds between polls after the first hour (default: 1200)",
+    )
     args = parser.parse_args()
+    if args.initial_interval <= 0:
+        parser.error("--initial-interval must be greater than zero")
     if args.interval <= 0:
         parser.error("--interval must be greater than zero")
 
-    deadline = time.monotonic() + args.duration
+    started = time.monotonic()
+    deadline = started + args.duration
     previous: dict[str, object] | None = None
     while True:
         try:
@@ -116,11 +132,20 @@ def main() -> int:
         except (RuntimeError, json.JSONDecodeError) as error:
             print(json.dumps({"event": "poll_error", "error": str(error)}), flush=True)
 
-        remaining = deadline - time.monotonic()
+        now = time.monotonic()
+        remaining = deadline - now
         if remaining <= 0:
             print(json.dumps({"event": "timeout"}), flush=True)
             return 0
-        time.sleep(min(args.interval, remaining))
+
+        elapsed = now - started
+        if elapsed < FIRST_HOUR_SECONDS:
+            interval = args.initial_interval
+            phase_remaining = FIRST_HOUR_SECONDS - elapsed
+            sleep_for = min(interval, phase_remaining, remaining)
+        else:
+            sleep_for = min(args.interval, remaining)
+        time.sleep(sleep_for)
 
 
 if __name__ == "__main__":
