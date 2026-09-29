@@ -7,7 +7,7 @@ description: Define style for Pull Request review comments and replies (tone, co
 
 ## Language
 
-- For a new review comment, write in the language used by the PR title and description. Obtain them with `gh pr view --json title,body`.
+- For a new review comment, write in the language used by the PR title and description. Obtain them through the active GitHub access method (for example, the GitHub CLI or GitHub MCP).
 - For a reply in an existing thread, write in the language of the comment being answered. Default to English.
 
 ## New review comments

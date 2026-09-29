@@ -3,172 +3,28 @@ name: add-pr-comments
 description: Add line-specific review comments on a GitHub Pull Request. Use whenever the user wants to post review comments on a PR — triggers include "adiciona comentários no PR", "comentar no PR", "add comments to the PR", "post review comments", "adicionar review no PR", referring to specific findings previously identified.
 ---
 
-## Steps
+# Add comments to a pull request
 
-1. Load and follow `pr-comment-writing` before drafting or posting any comment.
+## Choose the environment guide
 
-2. Identify the PR number with `gh pr view --json number` (or from the branch name / user context).
+Read the guide for the GitHub access method available in the current environment before gathering PR data or posting comments:
 
-3. Get the current commit SHA:
-   ```
-   git rev-parse HEAD
-   ```
+- When the authenticated GitHub CLI (`gh`) is available, follow [`references/github-cli.md`](references/github-cli.md).
+- When GitHub MCP tools are the available GitHub access method, follow [`references/github-mcp.md`](references/github-mcp.md).
+- When both are available, use the method requested by the user or already active in the environment.
 
-4. Extract owner/repo from `git remote get-url origin`.
+Use one guide for the operation and follow its instructions for the tool-specific requests and parameters.
 
-5. For each comment, use **file line numbers** (NOT diff positions). Read the file to confirm the exact line numbers. Decide whether the comment targets a **single line** or a **block of lines**:
+## Shared process
 
-   - Use a **single-line comment** for observations that concern exactly one line (e.g., a wrong variable name, a missing semicolon).
-   - Use a **multi-line (block) comment** when the observation spans a coherent block — a full function, a conditional branch, a repeated pattern, or any group of lines that must be read together to understand the point. The block must start and end within the same diff hunk.
+1. Load and follow `pr-comment-writing` before drafting or posting any comment. Use the active GitHub access method to read the PR title and description when choosing the comment language.
 
-   When in doubt, prefer the range that gives the reviewer the most context without being unnecessarily wide.
+2. Identify the PR and inspect its current state, including its head commit, changed files, diff, and existing review comments, using the selected environment guide.
 
-6. Check if the file is in the PR diff:
+3. For each finding, confirm the file path and current file line number. Use a single-line comment when the observation concerns one line. Use a block comment when the point spans a coherent group of lines that should be read together; keep the range within one diff hunk. When the target file is not in the PR diff, use a general PR comment that names the file and line so the author can locate it.
 
-   ```
-   gh api repos/:owner/:repo/pulls/:number/files --jq '.[].filename'
-   ```
+4. Before posting, check for an existing review comment on the same file and line or an overlapping range. Compare the substance: skip a comment that already covers the same point, and update an incomplete comment with the missing information. Use the environment guide's available update operation.
 
-   If the file path is **NOT in the diff**, post the comment as a **general PR comment** referencing the file and line so the person can locate themselves. Build `<body>` as described in step 8, then run:
+5. Draft the complete comment, including the AI disclosure required by `pr-comment-writing`, before sending it. Keep a blank line before the disclosure signature and ensure the submitted body contains a real line break there.
 
-   ```
-   gh api repos/:owner/:repo/issues/:number/comments \
-     -f body="$body"
-   ```
-
-   Then **skip** the following steps (do not attempt to post as a diff comment).
-
-   If the file **is in the diff**, proceed with the steps below.
-
-7. Before posting, check if there are already existing review comments on the same file + line (or overlapping range):
-
-   ```
-   gh api repos/:owner/:repo/pulls/:number/comments
-   ```
-
-   Filter the response for comments that match the same `path` and whose `line` (or `start_line`–`line` range) overlaps the intended range. If one is found:
-
-   - **Compare the content** of the existing comment with the new comment you intend to post.
-   - If the existing comment **already fully covers the same point** (same context, same essential information), **skip** — do not post or update.
-   - If the existing comment is **incomplete or missing key information**, **update** it with the complete content using `PATCH`:
-
-     ```
-     gh api repos/:owner/:repo/pulls/comments/:comment_id \
-       -X PATCH \
-       -f body="$body"
-     ```
-
-   - If **no existing comment** is found on that file + line, post a new one as normal.
-
-8. Before every create or update request, build the complete comment body with a blank line before the AI-disclosure signature. The API must receive literal newline characters, not the two-character sequence `\\n`. For a shell command, construct it as follows (with the fully drafted comment and signature in the variables):
-
-   ```
-   body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
-   ```
-
-   Use `-f body="$body"` in every request. This applies equally to new inline comments, general PR comments, and updates to existing comments. Keep the disclosure in `ai_signature`, for example `— comment generated with <client> (<complete model name>)`.
-
-9. Add each new comment (only for files that are in the diff).
-
-   **Single-line comment:**
-   ```
-   gh api repos/:owner/:repo/pulls/:number/comments \
-     -f body="$body" \
-     -f commit_id="<sha>" \
-     -f path="<file-path>" \
-     -F line=<file-line-number> \
-     -f side="RIGHT"
-   ```
-
-   **Multi-line (block) comment:**
-   ```
-   gh api repos/:owner/:repo/pulls/:number/comments \
-     -f body="$body" \
-     -f commit_id="<sha>" \
-     -f path="<file-path>" \
-     -F start_line=<first-line-of-block> \
-     -f start_side="RIGHT" \
-     -F line=<last-line-of-block> \
-     -f side="RIGHT"
-   ```
-
-   Parameters:
-   - `body`: the comment text
-   - `commit_id`: the SHA from step 3
-   - `path`: the file path relative to repo root (e.g. `.maestro/create-user.yaml`)
-   - `line`: the last (or only) line of the target range
-   - `start_line`: first line of the range — **only for multi-line comments**; omit for single-line
-   - `start_side` / `side`: always `"RIGHT"` (the new version of the file)
-   - `start_line` must be strictly less than `line`; both must fall within the same diff hunk
-
-## Examples
-
-Single-line comment:
-```
-comment="The testID \`user-form-papel-select\` does not exist in the source code, so this scenario cannot find the target element. Would it make sense to check whether it was renamed or removed?"
-ai_signature="— comment generated with <client> (<complete model name>)"
-body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
-gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
-  -f body="$body" \
-  -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
-  -f path=".maestro/create-user-organizador.yaml" \
-  -F line=53 \
-  -f side="RIGHT"
-```
-
-Multi-line (block) comment:
-```
-comment="This entire block duplicates the validation logic in \`src/validators/user.ts\`, which can cause the two implementations to drift. Could we extract it into a shared helper?"
-ai_signature="— comment generated with <client> (<complete model name>)"
-body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
-gh api repos/tecMTST/app-vitoria-mobile/pulls/72/comments \
-  -f body="$body" \
-  -f commit_id="fcbb2d1946e3e01b35fec9c3fdc688cc2039c1dd" \
-  -f path="src/screens/CreateUser.tsx" \
-  -F start_line=40 \
-  -f start_side="RIGHT" \
-  -F line=58 \
-  -f side="RIGHT"
-```
-
-General PR comment (file not in diff):
-```
-comment="**File: \`src/utils/helpers.ts\` (line 120)** — The \`formatDate\` function appears to be duplicated. Centralizing it in \`src/helpers/date.ts\` would keep the behavior in one place. Would you be open to reusing that version here?"
-ai_signature="— comment generated with <client> (<complete model name>)"
-body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
-gh api repos/tecMTST/app-vitoria-mobile/issues/72/comments \
-  -f body="$body"
-```
-
-Update existing comment:
-```
-comment="The testID \`user-form-papel-select\` does not exist in the source code, so this scenario cannot find the target element. Would it make sense to check whether it was renamed or removed?"
-ai_signature="— comment generated with <client> (<complete model name>)"
-body="$(printf '%s\\n\\n%s' "$comment" "$ai_signature")"
-gh api repos/tecMTST/app-vitoria-mobile/pulls/comments/123456 \
-  -X PATCH \
-  -f body="$body"
-```
-
-## Notes
-
-- **Escape backticks** inside double-quoted shell variables with `\``, otherwise the shell interprets them as command substitution and strips the content. Example: `comment="The \`formatDate\` function"`.
-- **Multi-line comments require both lines in the same hunk.** If `start_line` and `line` cross a hunk boundary the API returns a 422. If that happens, fall back to a single-line comment on the last line of the block.
-- **Use `-F` (uppercase)** for all numeric fields (`start_line`, `line`); use `-f` (lowercase) for strings (`start_side`, `side`, `body`, etc.).
-- Use `-f` for string values and `-F` for integers/booleans (required for `line`).
-- Use `line` (file line number) instead of `position` (diff position). The `position` parameter is deprecated and error-prone — it requires counting diff hunk lines, which is unreliable.
-- Owner/repo can be extracted from `git remote get-url origin`.
-- To decide if a comment is "complete", check if the existing comment's body contains the same core observation/point as the new comment. If it mentions the same problem but lacks detail, update it. If it already has the same level of detail, skip.
-- To check if a file is in the diff, use `gh api repos/:owner/:repo/pulls/:number/files --jq '.[].filename'` and verify the file path appears in the list.
-- General PR comments (issue comments) are not tied to a specific line but are useful for files that were not changed in the PR. Always include the file path and line in the body for reference.
-
-## Post-submission validation
-
-After posting all comments, **validate each one** by reading back the response JSON or fetching the comment:
-
-1. **Line number**: confirm the `line` field in the response matches the intended line (the `-F line=` value you sent).
-2. **File path**: confirm the `path` field matches the intended file.
-3. **Body content and AI disclosure**: confirm the `body` field preserved all text, especially text inside backticks, and has a blank line before the required AI-disclosure signature. Verify the API returned real line breaks, rather than a visible `\\n` in the body — if backticks were not escaped, the content may be missing.
-4. **No duplicate comments**: if you accidentally posted the same comment twice, delete the duplicate with `gh api repos/:owner/:repo/pulls/comments/:id -X DELETE`.
-
-If any comment is wrong, **delete and re-post** it with the correct parameters.
+6. Post new comments using the selected environment guide. After posting, verify each result's body, file path, and line or range, including the AI disclosure and its line break. If a comment was posted with incorrect content or location, correct it using the environment's edit or delete-and-repost operations.
