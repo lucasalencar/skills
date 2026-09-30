@@ -51,12 +51,21 @@ Spawn one subagent per file below. Load each reference file's current contents b
 
 Write all subagent outputs to one report, `.reviews/<iteration>.md`. When called by `branch-review-loop`, use its 1-based loop number as `<iteration>`; otherwise, use a timestamp. Create the directory as needed. Give every subagent its own clearly labeled Markdown section, using the skill or dimension name as the section title. Copy each output in full and verbatim into its section: do not summarize, compress, rewrite, or omit anything.
 
-In the final chat response, return only a **Summary** section that synthesizes the identified issues across all subagents. Merge duplicate reports of the same underlying problem into one finding, retaining all relevant impacts. Report a finding only when it has a concrete, non-speculative impact.
+Before writing the final chat response, merge duplicate reports of the same underlying problem into one finding, retaining all relevant impacts. Load and follow `branch-review-scope` to classify every distinct finding using the task and PR context. Report findings only when they have a concrete, non-speculative impact. Keep the findings detailed enough to carry into the later PR-comment step, and state the classification and why it applies. This review stage classifies and separates findings; leave their posting treatment to `add-pr-comments`.
+
+In the final chat response, use exactly these two issue sections, in this order:
+
+1. `## In-scope issues` — list these first, ordered by impact. Preserve the location, explanation, and concrete impacts from the finding format below.
+2. `## Out-of-scope issues` — include all actionable out-of-scope findings and follow-ups, with their reason for classification. Keep follow-ups labeled as follow-ups and state the evidence needed before reconsidering them. Put unresolved scope decisions here and identify the decision or evidence needed; do not omit them.
+
+Use the same finding format in both sections. Keep identifiers unique and sequential across both sections. Include the finding's classification and reason. If a section has no findings, write `None.` If neither section has findings, write `No actionable findings.` under **In-scope issues** and `None.` under **Out-of-scope issues**. Put the full report path at the end of the second section.
 
 ```markdown
 ### BR-001 — Title
 
 **Location:** `path/to/file:line`
+
+**Classification:** `<In-scope | Follow-up | Out-of-scope | Unresolved scope decision>` — one sentence explaining the classification.
 
 **Finding:** A concise statement of the problem.
 
