@@ -75,6 +75,7 @@ skills/
 | [resolve-pr-comments](skills/resolve-pr-comments/SKILL.md) | Fetch Pull Request comments and resolve them by applying suggested changes or replying with reasoning when a suggestion conflicts with prior decisions. |
 | [resolve-review-comments](skills/resolve-review-comments/SKILL.md) | Apply a shared triage process to code review comments. |
 | [spin-off-branch](skills/spin-off-branch/SKILL.md) | Extract independent work into a new branch based on main. |
+| [visual-validation](skills/visual-validation/SKILL.md) | Validate PR changes visually end-to-end and produce an agent-authored HTML evidence report. |
 | [work-checkout-message](skills/work-checkout-message/SKILL.md) | Generate a prioritized, Slack-ready summary of open Pull Requests. |
 
 ## Syncing from external sources
