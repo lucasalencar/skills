@@ -71,6 +71,7 @@ skills/
 | [orchestration-session](skills/orchestration-session/SKILL.md) | Coordinate a request exclusively through delegated subagents. |
 | [pr-comment-writing](skills/pr-comment-writing/SKILL.md) | Define how to write concise Pull Request comments and replies. |
 | [review-focus](skills/review-focus/SKILL.md) | Create a prioritized guide for human review of the business, architectural, and other consequential decisions in a PR or branch. |
+| [review-queue](skills/review-queue/SKILL.md) | Review multiple open PRs in parallel with prioritization and isolated worktree/tmux sessions. |
 | [resolve-hunk-comments](skills/resolve-hunk-comments/SKILL.md) | Fetch the review comments the user left in a live Hunk session and address them in the current code. |
 | [resolve-pr-comments](skills/resolve-pr-comments/SKILL.md) | Fetch Pull Request comments and resolve them by applying suggested changes or replying with reasoning when a suggestion conflicts with prior decisions. |
 | [resolve-review-comments](skills/resolve-review-comments/SKILL.md) | Apply a shared triage process to code review comments. |
