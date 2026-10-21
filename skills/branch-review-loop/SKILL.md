@@ -9,15 +9,16 @@ Run `branch-review` repeatedly, applying only justified in-scope fixes after eac
 
 ## Steps
 
-1. Run the `branch-review` skill in full — every iteration of this loop, including the second and third, must invoke all of the subagent skills that `branch-review` specifies. Do not shortcut later iterations to a single subagent or a subset; each pass through step 1 is a brand-new, complete `branch-review` run.
-2. For every finding, load and follow `branch-review-scope` to classify it as **in-scope**, **follow-up**, or **out-of-scope**. Use those classifications to decide which findings to fix in this loop and which to preserve for later consideration.
-3. If there are in-scope findings:
+1. Before the first review, inspect `git status --short` for staged, unstaged, and untracked changes. If any are present, commit them according to the user's commit preferences and follow an applicable commit skill when one is available. Keep independent intents in separate commits. Do not run `branch-review` or modify files before these baseline commits are complete. Confirm that the working tree is clean afterward; if any changes remain uncommitted, stop and report them. This establishes a committed baseline so loop fixes remain separate commits in the branch history.
+2. Run the `branch-review` skill in full — every iteration of this loop, including the second and third, must invoke all of the subagent skills that `branch-review` specifies. Do not shortcut later iterations to a single subagent or a subset; each pass through this step is a brand-new, complete `branch-review` run.
+3. For every finding, load and follow `branch-review-scope` to classify it as **in-scope**, **follow-up**, or **out-of-scope**. Use those classifications to decide which findings to fix in this loop and which to preserve for later consideration.
+4. If there are in-scope findings:
    - Apply all justified in-scope fixes directly to the code.
-   - Commit the changes with a message describing what was fixed.
-   - Go back to step 1.
-4. If there are no in-scope findings (either no findings at all, or all findings are follow-ups or out-of-scope):
+   - Commit the fixes according to the user's commit preferences and follow an applicable commit skill when one is available. Use messages that describe what was fixed.
+   - Go back to step 2.
+5. If there are no in-scope findings (either no findings at all, or all findings are follow-ups or out-of-scope):
    - Stop the loop.
-5. After the loop ends and all review interactions and connections are closed:
+6. After the loop ends and all review interactions and connections are closed:
    - Consolidate every unimplemented follow-up and out-of-scope finding into an actionable list of independent issue candidates.
    - For each candidate, include a concise suggested title, the triggering finding, and why it was left outside this branch.
    - Recommend that the user record each candidate as a separate issue in the project's issue tracker (or equivalent), rather than bundling unrelated work. Do not create or submit issues unless the user explicitly requests it.
