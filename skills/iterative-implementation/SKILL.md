@@ -70,9 +70,9 @@ Before coding:
 - Create an isolated worktree from the branch base. Do not edit the coordinator checkout or another task's worktree.
 
 Implementation:
-- Invoke implement-task and continue until complete or externally blocked.
+- Invoke implement-task with the PR base above and continue until complete or externally blocked; its workflow opens the PR using open-pr.
 - Keep all edits, commits, validation, and the PR limited to this task.
-- Open one PR with open-pr, targeting the PR base. Open it as a draft and leave it there — do not mark it ready for review, and do not transition the Jira card past In Progress. The user decides when the PR is ready.
+- Keep the PR as a draft — do not mark it ready for review or transition the Jira card past In Progress. The user decides when the PR is ready.
 
 Report back:
 - Jira status, worktree path, branch, PR as `PROJ-123 (PR #482)` with its URL and state, validation and results, and blockers.

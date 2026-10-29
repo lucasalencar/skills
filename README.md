@@ -65,7 +65,7 @@ skills/
 | [debug-local-servers](skills/debug-local-servers/SKILL.md) | Investigate local development servers through their tmux pane logs. |
 | [gitea-cmd-instructions](skills/gitea-cmd-instructions/SKILL.md) | Work with Gitea via the tea CLI, especially posting inline PR review comments. |
 | [hunk-review](skills/hunk-review/SKILL.md) | Interact with live Hunk diff review sessions via CLI. Inspects review focus, navigates files and hunks, and adds inline review comments for interactive diff review. |
-| [implement-task](skills/implement-task/SKILL.md) | Explicitly invoked implementation workflow: use test-driven development, then review and improve the branch until no in-scope findings remain. |
+| [implement-task](skills/implement-task/SKILL.md) | Implement a task with test-driven development, iterative branch review, and a pull request. |
 | [iterative-implementation](skills/iterative-implementation/SKILL.md) | Coordinate dependency-ordered Jira tasks through isolated subagents, worktrees, branches, and Pull Requests. |
 | [open-pr](skills/open-pr/SKILL.md) | Create a new pull request based on the changes in the current branch, following repository PR templates and conventions. |
 | [orchestration-session](skills/orchestration-session/SKILL.md) | Coordinate a request exclusively through delegated subagents. |
