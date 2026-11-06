@@ -20,6 +20,14 @@ starts a fresh cycle: wait for CI to run against the new SHA and for any
 configured automated reviewer to review that push, then handle their results
 as new watch events.
 
+## Execution
+
+Run this watch in a background subagent, not in the main conversation. A
+watch blocks for hours by design and would tie up the main session. When
+invoked, hand off the PR reference, requested duration, and scope to a
+subagent and let it run the loop; the main session stays free and only
+relays the subagent's progress updates.
+
 Use `scripts/poll_pr.py` for low-overhead remote polling. It emits JSON Lines
 only for the initial snapshot and material state changes; leave it running in
 a persistent terminal session and react when it prints an event. It requires
