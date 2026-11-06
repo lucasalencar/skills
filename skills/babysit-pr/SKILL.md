@@ -1,12 +1,19 @@
 ---
 name: babysit-pr
-description: When a Pull Request has just been created or opened, immediately start a persistent watch of its CI, review activity, and divergence from its base branch; also use when its CI is failing or not green, actionable review activity needs attention before review, or the user asks to babysit, watch, or monitor a PR.
+description: Long-term watch of an already-announced Pull Request: monitor CI regressions, new comments and reviews (from humans or automated reviewers), and divergence from the base branch over hours. Use only when the user explicitly invokes this skill (e.g. "/babysit-pr", "$babysit-pr", "babysit", "watch", "monitor this PR", "acompanha esse PR", "monitora o PR", or confirming the `ready-for-review` handoff offer); never load automatically on PR creation, review requests, or green CI. For the one-time health guarantee before announcing a PR (push, bring current, CI green), follow prepare-for-review instead.
 ---
 
 ## Objective
 
 Run a persistent PR watch for the requested duration (6 hours by default;
-allow up to 24 hours when requested). Keep the PR head branch healthy:
+allow up to 24 hours when requested). This skill only runs on explicit user
+request — never start it implicitly after opening a PR, requesting a review,
+or reaching green CI. The one-time readiness guarantee (push pending changes,
+bring the branch current, get CI green before announcing) belongs to the
+`prepare-for-review` skill; this watch assumes the PR was already announced and
+keeps observing it while the team reviews.
+
+Keep the PR head branch healthy:
 required CI must pass on its current head SHA, all actionable discussion and
 review activity must be handled, and the branch must be brought current with
 `main` whenever that can be rebased cleanly. A push, re-run, or
