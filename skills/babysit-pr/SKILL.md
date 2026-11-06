@@ -1,6 +1,6 @@
 ---
 name: babysit-pr
-description: Long-term watch of an already-announced Pull Request: monitor CI regressions, new comments and reviews (from humans or automated reviewers), and divergence from the base branch over hours. Use only when the user explicitly invokes this skill (e.g. "/babysit-pr", "$babysit-pr", "babysit", "watch", "monitor this PR", "acompanha esse PR", "monitora o PR", or confirming the `ready-for-review` handoff offer); never load automatically on PR creation, review requests, or green CI. For the one-time health guarantee before announcing a PR (push, bring current, CI green), follow prepare-for-review instead.
+description: Long-term watch of an already-announced Pull Request: monitor CI regressions, new comments and reviews (from humans or automated reviewers), and divergence from the base branch over hours. Use only when the user explicitly invokes this skill (e.g. "/babysit-pr", "$babysit-pr", "babysit", "watch", "monitor this PR", "acompanha esse PR", "monitora o PR", or confirming the `ready-for-review` handoff offer); never load automatically on PR creation, review requests, or green CI, except when chained automatically from `ready-for-review`. For the one-time health guarantee before announcing a PR (push, bring current, CI green), follow prepare-for-review instead.
 ---
 
 ## Objective

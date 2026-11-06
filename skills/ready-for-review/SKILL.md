@@ -137,16 +137,15 @@ Whenever a custom step says to post a message to a Slack channel, **always** run
 
 ---
 
-# Step 6 — Offer continued monitoring
+# Step 6 — Start continued monitoring
 
-After announcing, offer to start a `babysit-pr` watch (long-term monitoring
-of CI regressions, review comments, and divergence while the team reviews).
-Ask the user first and start it only on confirmation — never start the watch
-silently, since it runs for hours and pushes fixes on its own. On
-confirmation, invoke `babysit-pr` for the PR with the requested duration.
+After announcing, invoke a `babysit-pr` watch for the PR automatically
+(long-term monitoring of CI regressions, review comments, and divergence
+while the team reviews). Use the default watch duration unless the user
+requested otherwise.
 
 ---
 
 # Output
 
-Summarize what was done in 2–3 lines. Include any relevant links (PR, Slack message, Jira ticket). If the user declined continued monitoring, say the PR is unmonitored.
+Summarize what was done in 2–3 lines. Include any relevant links (PR, Slack message, Jira ticket). State that a `babysit-pr` watch is now active on the PR.
